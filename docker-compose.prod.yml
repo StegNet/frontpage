@@ -1,6 +1,6 @@
 services:
   frontpage:
-    image: ghcr.io/ungms/pathos-raisa
+    image: ghcr.io/stegnet/frontpage
     tty: true
     stdin_open: true
     networks:
