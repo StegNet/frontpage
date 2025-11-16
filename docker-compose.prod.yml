@@ -1,0 +1,19 @@
+services:
+  frontpage:
+    image: ghcr.io/ungms/pathos-raisa
+    tty: true
+    stdin_open: true
+    networks:
+      - traefik
+    deploy:
+      update_config:
+        parallelism: 1
+      replicas: 1
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.frontpage.rule: Host(`stegnet.com`)
+        traefik.http.services.frontpage.loadbalancer.server.port: ${API_PORT-3000}
+
+networks:
+  traefik:
+    external: true
