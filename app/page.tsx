@@ -39,6 +39,11 @@ export default function Home() {
               Privacy Policy
             </button>
           </nav>
+          {/* Direct permalinks for sharing */}
+          <div className="mt-4 flex gap-4 text-sm">
+            <a href="/terms" className="underline decoration-primary-foreground/40 hover:decoration-primary-foreground">Permalink Terms</a>
+            <a href="/privacy" className="underline decoration-primary-foreground/40 hover:decoration-primary-foreground">Permalink Privacy</a>
+          </div>
         </div>
       </header>
 
