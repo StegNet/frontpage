@@ -32,6 +32,9 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage/lcov.info
           fail_ci_if_error: true
+          # For Codecov Enterprise / self-hosted instances, set the repo/org-level variable CODECOV_URL
+          # e.g. https://codecov.mycompany.com
+          url: ${{ vars.CODECOV_URL || 'https://codecov.io' }}
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
