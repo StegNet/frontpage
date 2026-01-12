@@ -26,21 +26,13 @@ jobs:
       - name: Run tests (Jest) with coverage
         run: bun run test:coverage -- --passWithNoTests
 
-      - name: Set Codecov host (optional)
-        shell: bash
-        run: |
-          if [ -n "${{ vars.CODECOV_URL }}" ]; then
-            echo "CODECOV_URL=${{ vars.CODECOV_URL }}" >> "$GITHUB_ENV"
-          else
-            echo "CODECOV_URL=https://codecov.io" >> "$GITHUB_ENV"
-          fi
-
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage/lcov.info
           fail_ci_if_error: true
+          url: ${{ vars.CODECOV_URL }}
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
