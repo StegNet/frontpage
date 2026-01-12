@@ -1,5 +1,4 @@
-# test 2
-name: Test and upload coverage report
+name: Upload Coverage Report
 
 on:
   push:
@@ -9,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  coverage:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,6 +26,10 @@ jobs:
       - name: Run tests (Jest) with coverage
         run: bun run test:coverage -- --passWithNoTests
 
+      - name: Test with Jest
+        run: |
+          JEST_JUNIT_CLASSNAME="{filepath}" jest --reporters=jest-junit
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
@@ -35,9 +38,19 @@ jobs:
           fail_ci_if_error: true
           url: ${{ vars.CODECOV_URL }}
 
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          url: ${{ vars.CODECOV_URL }}
+
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: coverage/
           if-no-files-found: warn
+
+
+
