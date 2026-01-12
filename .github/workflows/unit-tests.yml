@@ -27,8 +27,7 @@ jobs:
         run: bun run test:coverage -- --passWithNoTests
 
       - name: Test with Jest
-        run: |
-          JEST_JUNIT_CLASSNAME="{filepath}" jest --reporters=jest-junit
+        run: bun run test:report
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
