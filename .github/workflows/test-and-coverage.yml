@@ -1,5 +1,4 @@
-# This took waaay too long.
-name: Test and Coverage
+name: Test and upload coverage report
 
 on:
   push:
