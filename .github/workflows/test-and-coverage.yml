@@ -24,7 +24,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Run tests (Jest) with coverage
-        run: bunx jest --config ${{ github.workspace }}/jest.config.cjs --coverage --passWithNoTests
+        run: bun run test:coverage -- --passWithNoTests
 
       - name: Set Codecov host (optional)
         shell: bash
