@@ -20,6 +20,10 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
     ]
 
     let currentSequence = 0
+    let currentProgressWidth = 0
+    const timeouts: NodeJS.Timeout[] = []
+    const intervals: NodeJS.Timeout[] = []
+    let animationFrames: number[] = []
 
     const showNextSequence = () => {
       if (currentSequence < sequences.length) {
@@ -35,6 +39,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
             clearInterval(typeInterval)
           }
         }, 30)
+        intervals.push(typeInterval)
 
         // Show progress bar
         if (currentSequence > 0) {
@@ -43,7 +48,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
         
         // Animate progress width
         const targetWidth = ((currentSequence + 1) / sequences.length) * 100
-        const startWidth = progressWidth
+        const startWidth = currentProgressWidth
         const startTime = Date.now()
         
         const animateProgress = () => {
@@ -52,20 +57,25 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
           const eased = progress < 0.5 
             ? 2 * progress * progress 
             : 1 - Math.pow(-2 * progress + 2, 2) / 2
-          setProgressWidth(startWidth + (targetWidth - startWidth) * eased)
+          const newWidth = startWidth + (targetWidth - startWidth) * eased
+          currentProgressWidth = newWidth
+          setProgressWidth(newWidth)
           
           if (progress < 1) {
-            requestAnimationFrame(animateProgress)
+            const frameId = requestAnimationFrame(animateProgress)
+            animationFrames.push(frameId)
           }
         }
         
-        requestAnimationFrame(animateProgress)
+        const frameId = requestAnimationFrame(animateProgress)
+        animationFrames.push(frameId)
 
         currentSequence++
-        setTimeout(showNextSequence, sequence.duration)
+        const timeout = setTimeout(showNextSequence, sequence.duration)
+        timeouts.push(timeout)
       } else {
         // All sequences complete - fade out
-        setTimeout(() => {
+        const fadeTimeout = setTimeout(() => {
           const startTime = Date.now()
           const fadeOut = () => {
             const elapsed = Date.now() - startTime
@@ -73,18 +83,22 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
             setOpacity(1 - progress)
             
             if (progress < 1) {
-              requestAnimationFrame(fadeOut)
+              const frameId = requestAnimationFrame(fadeOut)
+              animationFrames.push(frameId)
             } else {
               onComplete()
             }
           }
-          requestAnimationFrame(fadeOut)
+          const frameId = requestAnimationFrame(fadeOut)
+          animationFrames.push(frameId)
         }, 800)
+        timeouts.push(fadeTimeout)
       }
     }
 
     // Start the sequence after initial delay
-    setTimeout(showNextSequence, 500)
+    const initialTimeout = setTimeout(showNextSequence, 500)
+    timeouts.push(initialTimeout)
 
     // Particles animation
     const createParticle = () => {
@@ -117,21 +131,29 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
         particle.style.opacity = `${0.6 * (1 - progress)}`
         
         if (progress < 1) {
-          requestAnimationFrame(animate)
+          const frameId = requestAnimationFrame(animate)
+          animationFrames.push(frameId)
         } else {
           particle.remove()
         }
       }
       
-      requestAnimationFrame(animate)
+      const frameId = requestAnimationFrame(animate)
+      animationFrames.push(frameId)
     }
 
     const particleInterval = setInterval(createParticle, 200)
+    intervals.push(particleInterval)
 
     return () => {
-      clearInterval(particleInterval)
+      // Clear all timeouts
+      timeouts.forEach(timeout => clearTimeout(timeout))
+      // Clear all intervals
+      intervals.forEach(interval => clearInterval(interval))
+      // Cancel all animation frames
+      animationFrames.forEach(frameId => cancelAnimationFrame(frameId))
     }
-  }, [onComplete, progressWidth])
+  }, [onComplete])
 
   return (
     <div
