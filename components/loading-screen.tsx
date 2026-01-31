@@ -8,8 +8,14 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
   const [progressWidth, setProgressWidth] = useState(0)
   const [opacity, setOpacity] = useState(1)
   const containerRef = useRef<HTMLDivElement>(null)
+  const audioContextRef = useRef<AudioContext | null>(null)
 
   useEffect(() => {
+    // Initialize Web Audio API
+    if (typeof window !== 'undefined' && !audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
+    }
+
     const sequences = [
       { text: 'INITIALIZING SYSTEM...', duration: 2000 },
       { text: 'CONNECTING TO SECURE DATABASE...', duration: 2200 },
@@ -25,6 +31,65 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
     const intervals: NodeJS.Timeout[] = []
     let animationFrames: number[] = []
 
+    // Audio helper functions
+    const playTypeSound = () => {
+      if (!audioContextRef.current) return
+      const ctx = audioContextRef.current
+      const oscillator = ctx.createOscillator()
+      const gainNode = ctx.createGain()
+      
+      oscillator.connect(gainNode)
+      gainNode.connect(ctx.destination)
+      
+      oscillator.frequency.value = 800 + Math.random() * 200
+      oscillator.type = 'sine'
+      
+      gainNode.gain.setValueAtTime(0.01, ctx.currentTime)
+      gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.02)
+      
+      oscillator.start(ctx.currentTime)
+      oscillator.stop(ctx.currentTime + 0.02)
+    }
+
+    const playProgressSound = () => {
+      if (!audioContextRef.current) return
+      const ctx = audioContextRef.current
+      const oscillator = ctx.createOscillator()
+      const gainNode = ctx.createGain()
+      
+      oscillator.connect(gainNode)
+      gainNode.connect(ctx.destination)
+      
+      oscillator.frequency.value = 600
+      oscillator.type = 'sine'
+      
+      gainNode.gain.setValueAtTime(0.02, ctx.currentTime)
+      gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1)
+      
+      oscillator.start(ctx.currentTime)
+      oscillator.stop(ctx.currentTime + 0.1)
+    }
+
+    const playCompletionSound = () => {
+      if (!audioContextRef.current) return
+      const ctx = audioContextRef.current
+      const oscillator = ctx.createOscillator()
+      const gainNode = ctx.createGain()
+      
+      oscillator.connect(gainNode)
+      gainNode.connect(ctx.destination)
+      
+      oscillator.frequency.setValueAtTime(400, ctx.currentTime)
+      oscillator.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.2)
+      oscillator.type = 'sine'
+      
+      gainNode.gain.setValueAtTime(0.03, ctx.currentTime)
+      gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
+      
+      oscillator.start(ctx.currentTime)
+      oscillator.stop(ctx.currentTime + 0.3)
+    }
+
     const showNextSequence = () => {
       if (currentSequence < sequences.length) {
         const sequence = sequences[currentSequence]
@@ -34,6 +99,9 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
         const typeInterval = setInterval(() => {
           if (charIndex <= sequence.text.length) {
             setCurrentText(sequence.text.substring(0, charIndex))
+            if (charIndex > 0 && charIndex % 2 === 0) {
+              playTypeSound()
+            }
             charIndex++
           } else {
             clearInterval(typeInterval)
@@ -64,6 +132,8 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
           if (progress < 1) {
             const frameId = requestAnimationFrame(animateProgress)
             animationFrames.push(frameId)
+          } else {
+            playProgressSound()
           }
         }
         
@@ -75,6 +145,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
         timeouts.push(timeout)
       } else {
         // All sequences complete - fade out
+        playCompletionSound()
         const fadeTimeout = setTimeout(() => {
           const startTime = Date.now()
           const fadeOut = () => {
@@ -196,8 +267,8 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
 
       {/* Central content */}
       <div className="relative z-10 px-8 text-center">
-        {/* Main text with glitch effect */}
-        <div className="relative mb-12">
+        {/* Main text with glitch effect - Fixed height container */}
+        <div className="relative mb-12" style={{ minHeight: '80px' }}>
           <h1
             className="text-2xl font-bold tracking-widest md:text-4xl"
             style={{
@@ -234,29 +305,62 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
           </div>
         </div>
 
-        {/* Progress bar */}
-        {showProgress && (
-          <div className="mx-auto w-full max-w-md">
-            <div className="relative h-2 overflow-hidden rounded-full bg-gray-900">
-              <div
-                className="h-full rounded-full transition-all"
+        {/* Progress bar with fixed width container - Glassy iOS 26 style */}
+        <div className="mx-auto w-full max-w-md" style={{ minHeight: '60px' }}>
+          {showProgress && (
+            <div className="relative">
+              {/* Glassy container with backdrop blur */}
+              <div 
+                className="relative h-3 overflow-hidden rounded-2xl"
                 style={{
-                  background: 'linear-gradient(90deg, #00ffff, #00ff88)',
-                  boxShadow: '0 0 20px rgba(0, 255, 255, 0.8)',
-                  width: `${progressWidth}%`,
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: `
+                    0 8px 32px 0 rgba(0, 255, 255, 0.1),
+                    inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+                    inset 0 -1px 0 0 rgba(0, 0, 0, 0.1)
+                  `,
                 }}
-              />
-              {/* Animated progress glow */}
+              >
+                {/* Progress fill with glass effect */}
+                <div
+                  className="h-full rounded-2xl transition-all duration-300"
+                  style={{
+                    background: 'linear-gradient(90deg, rgba(0, 255, 255, 0.4), rgba(0, 255, 136, 0.4))',
+                    boxShadow: `
+                      0 0 20px rgba(0, 255, 255, 0.4),
+                      inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+                      inset 0 -1px 0 0 rgba(0, 0, 0, 0.1)
+                    `,
+                    width: `${progressWidth}%`,
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)',
+                  }}
+                >
+                  {/* Inner glow shimmer */}
+                  <div
+                    className="h-full w-full rounded-2xl"
+                    style={{
+                      background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
+                      animation: 'shimmer 2s ease-in-out infinite',
+                    }}
+                  />
+                </div>
+              </div>
+              
+              {/* Subtle outer glow */}
               <div
-                className="absolute left-0 top-0 h-full w-20 blur-xl"
+                className="absolute inset-0 rounded-2xl pointer-events-none"
                 style={{
-                  background: 'rgba(0, 255, 255, 0.6)',
-                  animation: 'progress-glow 1.5s ease-in-out infinite',
+                  boxShadow: '0 0 40px rgba(0, 255, 255, 0.2)',
+                  animation: 'pulse-glow 2s ease-in-out infinite',
                 }}
               />
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Status indicators */}
         <div className="mt-8 flex justify-center gap-4">
@@ -305,6 +409,24 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
           }
           100% {
             transform: translateY(100vh);
+          }
+        }
+
+        @keyframes shimmer {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
+
+        @keyframes pulse-glow {
+          0%, 100% {
+            opacity: 0.3;
+          }
+          50% {
+            opacity: 0.6;
           }
         }
       `}</style>
