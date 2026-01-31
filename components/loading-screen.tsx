@@ -10,6 +10,11 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
   const containerRef = useRef<HTMLDivElement>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
 
+  // Fixed heights to prevent layout shifts during text/progress changes
+  const TEXT_CONTAINER_HEIGHT = '80px'
+  const PROGRESS_CONTAINER_HEIGHT = '60px'
+  const TYPING_SOUND_INTERVAL = 2 // Play sound every N characters to avoid overwhelming audio
+
   useEffect(() => {
     // Initialize Web Audio API
     if (typeof window !== 'undefined' && !audioContextRef.current) {
@@ -99,7 +104,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
         const typeInterval = setInterval(() => {
           if (charIndex <= sequence.text.length) {
             setCurrentText(sequence.text.substring(0, charIndex))
-            if (charIndex > 0 && charIndex % 2 === 0) {
+            if (charIndex > 0 && charIndex % TYPING_SOUND_INTERVAL === 0) {
               playTypeSound()
             }
             charIndex++
@@ -267,8 +272,8 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
 
       {/* Central content */}
       <div className="relative z-10 px-8 text-center">
-        {/* Main text with glitch effect - Fixed height container */}
-        <div className="relative mb-12" style={{ minHeight: '80px' }}>
+        {/* Main text with glitch effect - Fixed height container to prevent layout shifts */}
+        <div className="relative mb-12" style={{ minHeight: TEXT_CONTAINER_HEIGHT }}>
           <h1
             className="text-2xl font-bold tracking-widest md:text-4xl"
             style={{
@@ -305,8 +310,8 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
           </div>
         </div>
 
-        {/* Progress bar with fixed width container - Glassy iOS 26 style */}
-        <div className="mx-auto w-full max-w-md" style={{ minHeight: '60px' }}>
+        {/* Progress bar with fixed width container - Glassy iOS 26 style - Fixed height prevents layout shift */}
+        <div className="mx-auto w-full max-w-md" style={{ minHeight: PROGRESS_CONTAINER_HEIGHT }}>
           {showProgress && (
             <div className="relative">
               {/* Glassy container with backdrop blur */}
