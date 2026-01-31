@@ -3,12 +3,16 @@
 import { useState } from 'react'
 import TermsOfService from '@/components/terms-of-service'
 import PrivacyPolicy from '@/components/privacy-policy'
+import LoadingScreen from '@/components/loading-screen'
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState<'terms' | 'privacy'>('terms')
+  const [showLoading, setShowLoading] = useState(true)
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
+      {showLoading && <LoadingScreen onComplete={() => setShowLoading(false)} />}
+      <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <header className="border-b border-border bg-primary">
         <div className="mx-auto max-w-4xl px-6 py-8">
@@ -59,5 +63,6 @@ export default function Home() {
         </div>
       </footer>
     </div>
+    </>
   )
 }
