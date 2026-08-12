@@ -10,8 +10,7 @@ COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 COPY public ./public
-COPY app ./app
-COPY components ./components
+COPY src ./src
 COPY tsconfig.json next.config.ts postcss.config.mjs ./
 
 EXPOSE 3000
@@ -32,9 +31,9 @@ ARG VERSION
 ARG COMMIT_SHA
 ENV NEXT_PUBLIC_APP_VERSION=${VERSION:-latest}
 ENV NEXT_PUBLIC_COMMIT_SHA=${COMMIT_SHA:-localbuild}
-COPY app ./app
+
+COPY src ./src
 COPY public ./public
-COPY components ./components
 COPY tsconfig.json next.config.ts postcss.config.mjs ./
 
 RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
