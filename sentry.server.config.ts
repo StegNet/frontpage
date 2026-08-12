@@ -13,6 +13,9 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  release: process.env.NEXT_PUBLIC_SENTRY_RELEASE
+    ? `frontpage@${process.env.NEXT_PUBLIC_SENTRY_RELEASE.replace(/^v/, "")}`
+    : undefined,
   integrations: [
     nodeProfilingIntegration(),
   ],
