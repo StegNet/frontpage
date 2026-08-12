@@ -2,6 +2,10 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Native addon with a dynamic require() — must stay external so Turbopack
+  // doesn't try to bundle it into the server chunks.
+  serverExternalPackages: ["@sentry/profiling-node"],
+
   async headers() {
     return [{
       source: "/:path*",
