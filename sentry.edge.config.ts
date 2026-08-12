@@ -16,6 +16,7 @@ Sentry.init({
   release: process.env.NEXT_PUBLIC_SENTRY_RELEASE
     ? `frontpage@${process.env.NEXT_PUBLIC_SENTRY_RELEASE.replace(/^v/, "")}`
     : undefined,
+  environment: process.env.VERCEL_ENV ?? process.env.NODE_ENV,
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: process.env.NODE_ENV === 'production'

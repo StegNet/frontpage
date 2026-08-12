@@ -15,6 +15,7 @@ Sentry.init({
   release: process.env.NEXT_PUBLIC_SENTRY_RELEASE
     ? `frontpage@${process.env.NEXT_PUBLIC_SENTRY_RELEASE.replace(/^v/, "")}`
     : undefined,
+  environment: process.env.NEXT_PUBLIC_VERCEL_ENV ?? process.env.NODE_ENV,
 
   // Add optional integrations for additional features
   integrations: [
