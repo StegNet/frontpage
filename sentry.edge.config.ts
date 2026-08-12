@@ -4,15 +4,31 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import { nodeProfilingIntegration } from "@sentry/profiling-node";
+
+if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
+  console.log('Instrumenting Sentry for the edge runtime...')
+} else {
+  console.warn('No Sentry DSN detected. Telemetry may fail.')
+}
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   release: process.env.NEXT_PUBLIC_SENTRY_RELEASE
     ? `frontpage@${process.env.NEXT_PUBLIC_SENTRY_RELEASE.replace(/^v/, "")}`
     : undefined,
+  integrations: [
+    nodeProfilingIntegration(),
+  ],
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: 1,
+  tracesSampleRate: process.env.NODE_ENV === 'production'
+    ? 1.0
+    : 1.0,
+  profileSessionSampleRate: process.env.NODE_ENV === 'production'
+  ? 1.0
+  : 1.0,
+  profileLifecycle: 'trace',
 
   // Enable logs to be sent to Sentry
   enableLogs: true,
@@ -24,3 +40,5 @@ Sentry.init({
     // httpBodies: [],
   },
 });
+
+console.log('Sentry for the edge runtime instrumented!');
