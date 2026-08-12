@@ -2,18 +2,26 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async headers() {
+    return [{
+      source: "/:path*",
+      headers: [{
+        key: "Document-Policy",
+        value: "js-profiling",
+      }],
+    }];
+  },
 };
 
 export default withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-  org: "stegnet",
+  org: 'stegnet',
+  project: 'stegnet-frontpage',
+  authToken: process.env.SENTRY_AUTH_TOKEN,
 
-  project: "stegnet-frontpage",
-
-  // Only print logs for uploading source maps in CI
+  debug: false,
   silent: !process.env.CI,
 
   // For all available options, see:
@@ -21,6 +29,12 @@ export default withSentryConfig(nextConfig, {
 
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
+
+  release: {
+    name: process.env.SENTRY_RELEASE
+      ? `frontpage@${process.env.SENTRY_RELEASE}`
+      : undefined,
+  },
 
   // Uncomment to route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
   // This can increase your server load as well as your hosting bill.

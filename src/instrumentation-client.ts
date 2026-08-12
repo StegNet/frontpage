@@ -4,15 +4,31 @@
 
 import * as Sentry from "@sentry/nextjs";
 
+if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
+  console.log('Instrumenting client-sided Sentry...')
+} else {
+  console.warn('No Sentry DSN detected. Telemetry may fail.')
+}
+
 Sentry.init({
-  dsn: "https://3360be6218ebe59d502404bc72e43fd6@o4508898354462720.ingest.de.sentry.io/4511891651428432",
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 
   // Add optional integrations for additional features
-  integrations: [Sentry.replayIntegration()],
+  integrations: [
+    Sentry.replayIntegration(),
+    Sentry.browserTracingIntegration(),
+    Sentry.browserProfilingIntegration(),
+  ],
+  tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: 1,
-  // Enable logs to be sent to Sentry
+  tracesSampleRate: process.env.NODE_ENV === 'production'
+    ? 1.0
+    : 1.0,
+  profileSessionSampleRate: process.env.NODE_ENV === 'production'
+  ? 1.0
+  : 1.0,
+
   enableLogs: true,
 
   // Define how likely Replay events are sampled.
@@ -32,3 +48,5 @@ Sentry.init({
 });
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
+
+console.log('Client-sided Sentry instrumented!');
