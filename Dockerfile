@@ -39,6 +39,7 @@ COPY tsconfig.json next.config.ts postcss.config.mjs sentry.server.config.ts sen
 RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
     SENTRY_AUTH_TOKEN="$(cat /run/secrets/SENTRY_AUTH_TOKEN)" \
     VERSION="${VERSION:-latest}" \
+    SENTRY_RELEASE="${VERSION:-latest}" \
     bun run build
 
 # Run prod image

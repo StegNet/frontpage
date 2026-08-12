@@ -32,7 +32,7 @@ export default withSentryConfig(nextConfig, {
 
   release: {
     name: process.env.SENTRY_RELEASE
-      ? `frontpage@${process.env.SENTRY_RELEASE}`
+      ? `frontpage@${process.env.SENTRY_RELEASE.replace(/^v/, "")}`
       : undefined,
   },
 

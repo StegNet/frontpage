@@ -1,8 +1,7 @@
 name: Publish Docker image and Release
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   check-version:
@@ -71,6 +70,11 @@ jobs:
         with:
           context: .
           push: true
+          build-args: |
+            VERSION=${{ needs.check-version.outputs.version }}
+            COMMIT_SHA=${{ github.sha }}
+          secrets: |
+            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
           tags: |
             ${{ needs.check-version.outputs.image_repo }}:${{ needs.check-version.outputs.version }}
             ${{ needs.check-version.outputs.image_repo }}:latest
