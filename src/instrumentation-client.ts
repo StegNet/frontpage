@@ -19,7 +19,7 @@ Sentry.init({
     Sentry.browserTracingIntegration(),
     Sentry.browserProfilingIntegration(),
   ],
-  tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
+  tracePropagationTargets: ["localhost", /^\/api/, /^https:\/\/stegnet\.com\/api/],
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: process.env.NODE_ENV === 'production'
