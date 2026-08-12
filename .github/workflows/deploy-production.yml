@@ -54,6 +54,11 @@ jobs:
       - name: Install Vercel CLI
         run: bun add -g vercel@58.9.4
 
+      - name: Debug Vercel access
+        run: |
+          vercel whoami --token=${{ secrets.VERCEL_TOKEN }}
+          vercel project ls --scope=stegnet --token=${{ secrets.VERCEL_TOKEN }}
+
       - name: Pull Vercel production env
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 

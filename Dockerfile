@@ -11,7 +11,7 @@ RUN bun install --frozen-lockfile
 
 COPY public ./public
 COPY src ./src
-COPY tsconfig.json next.config.ts postcss.config.mjs ./
+COPY tsconfig.json next.config.ts postcss.config.mjs sentry.server.config.ts sentry.edge.config.ts ./
 
 EXPOSE 3000
 ENV NODE_ENV=development
@@ -34,7 +34,7 @@ ENV NEXT_PUBLIC_COMMIT_SHA=${COMMIT_SHA:-localbuild}
 
 COPY src ./src
 COPY public ./public
-COPY tsconfig.json next.config.ts postcss.config.mjs ./
+COPY tsconfig.json next.config.ts postcss.config.mjs sentry.server.config.ts sentry.edge.config.ts ./
 
 RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
     SENTRY_AUTH_TOKEN="$(cat /run/secrets/SENTRY_AUTH_TOKEN)" \
