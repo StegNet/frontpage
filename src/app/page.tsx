@@ -1,0 +1,13 @@
+import Image from "next/image";
+
+export default function Home() {
+  return (
+    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+      <main className="flex flex-1 w-full max-w-3xl flex-col items-center py-32 px-16 bg-white dark:bg-black sm:items-start">
+        <h1> We are cooking up something awesome... </h1>
+        <hr className="w-96 h-1 mx-auto my-4 border-0 rounded-sm md:my-10 bg-gray-800 dark:bg-amber-50" />
+        <p> Pardon the lack of detail, we will reach out when we have more info for you!</p>
+      </main>
+    </div>
+  );
+}
