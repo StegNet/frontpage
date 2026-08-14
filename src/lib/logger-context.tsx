@@ -13,9 +13,10 @@ const LoggerContext = createContext<LoggerContextValue | null>(null);
 
 export function LoggerProvider({ children }: { children: React.ReactNode }) {
   const logger = useMemo(() => getLogger(ROOT_CATEGORY), []);
+  const value = useMemo(() => ({ logger }), [logger]);
 
   return (
-    <LoggerContext.Provider value={{ logger }}>
+    <LoggerContext.Provider value={value}>
       {children}
     </LoggerContext.Provider>
   );
