@@ -1,6 +1,16 @@
+'use client';
+
+import { useLogger } from "@/lib/logger-context";
+import { getLogger } from "@logtape/logtape";
 import Image from "next/image";
 
 export default function Home() {
+  const logger = useLogger();
+
+  logger.info('Rendering home page...', {
+    platform: navigator.userAgent,
+  });
+  
   return (
     <div className="flex flex-col flex-1 items-center justify-center font-sans bg-zinc-50 dark:bg-gray-900">
       <h1> We are cooking up something awesome... </h1>

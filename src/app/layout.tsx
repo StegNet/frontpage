@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/theme-switcher";
+import { LoggerProvider } from "@/lib/logger-context";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,19 +30,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="fixed top-4 right-4 z-50">
-            <ModeToggle />
-          </div>
-          {children}
-        </ThemeProvider>
-        <Analytics />
-        <SpeedInsights />
+        <LoggerProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="fixed top-4 right-4 z-50">
+              <ModeToggle />
+            </div>
+            {children}
+          </ThemeProvider>
+          <Analytics />
+          <SpeedInsights />
+        </LoggerProvider>
       </body>
     </html>
   );

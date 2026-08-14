@@ -6,6 +6,8 @@
       "name": "stegnet-frontend",
       "dependencies": {
         "@base-ui/react": "^1.7.0",
+        "@logtape/logtape": "^2.3.1",
+        "@logtape/sentry": "^2.3.1",
         "@sentry/nextjs": "^10.70.0",
         "@sentry/profiling-node": "^10.70.0",
         "@vercel/analytics": "^2.0.1",
@@ -294,6 +296,10 @@
     "@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.5", "", {}, "sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og=="],
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
+
+    "@logtape/logtape": ["@logtape/logtape@2.3.1", "", {}, "sha512-nYLsBWMKk0Llp62U6cDbQxNcEKc0E0s5hWbAxkmUM8ax6VchGkPSjPrVp3ixFQUuvUB9ku7MSgPzFhmVTSh2Jw=="],
+
+    "@logtape/sentry": ["@logtape/sentry@2.3.1", "", { "peerDependencies": { "@logtape/logtape": "^2.3.1", "@sentry/core": ">=8.0.0" } }, "sha512-VHmaISD9gQCSuGzA8fTSEDUTAmN6vYnlX+vzGPt7Ix8/7buGhohK9mToSnJ81ns+KaHeMR9HFYL3beGagrsr9w=="],
 
     "@mapbox/node-pre-gyp": ["@mapbox/node-pre-gyp@2.0.3", "", { "dependencies": { "consola": "^3.2.3", "detect-libc": "^2.0.0", "https-proxy-agent": "^7.0.5", "node-fetch": "^2.6.7", "nopt": "^8.0.0", "semver": "^7.5.3", "tar": "^7.4.0" }, "bin": { "node-pre-gyp": "bin/node-pre-gyp" } }, "sha512-uwPAhccfFJlsfCxMYTwOdVfOz3xqyj8xYL3zJj8f0pb30tLohnnFPhLuqp4/qoEz8sNxe4SESZedcBojRefIzg=="],
 
