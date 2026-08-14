@@ -1,8 +1,7 @@
 'use client';
 
+import { useEffect } from "react";
 import { useLogger } from "@/lib/logger-context";
-import { getLogger } from "@logtape/logtape";
-import Image from "next/image";
 
 export default function Home() {
   const logger = useLogger();
