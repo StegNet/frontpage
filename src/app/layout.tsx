@@ -17,8 +17,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://stegnet.com"),
   title: "StegNet",
   description: "Welcome to StegNet.",
+  openGraph: {
+    title: "StegNet",
+    description: "Welcome to StegNet.",
+    url: "https://stegnet.com",
+    siteName: "StegNet",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
