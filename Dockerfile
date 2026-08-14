@@ -2,6 +2,9 @@
 
 FROM oven/bun:1 AS deps
 WORKDIR /usr/src/app
+# ca-certificates: sentry-cli needs them to reach the Sentry API over HTTPS at build
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 COPY package.json bun.lock ./
 RUN --mount=type=cache,target=/root/.bun/install/cache \
     bun install --frozen-lockfile
