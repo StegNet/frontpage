@@ -32,6 +32,8 @@ export default withSentryConfig(nextConfig, {
     name: process.env.SENTRY_RELEASE
       ? `frontpage@${process.env.SENTRY_RELEASE.replace(/^v/, "")}`
       : undefined,
+    // Deploy is recorded at deploy time (in the workflow's environment-scoped
+    // job), not here — the build produces one env-agnostic image.
   },
 
   webpack: {

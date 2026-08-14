@@ -71,8 +71,18 @@ jobs:
       name: production
       url: ${{ vars.PRODUCTION_URL }}
     concurrency: production
+    env:
+      DEPLOY_ENV: production
     steps:
       - name: Trigger Portainer redeploy webhook
         uses: newarifrh/portainer-service-webhook@v1
         with:
           webhook_url: "${{ secrets.PORTAINER_WEBHOOK }}?${{ vars.PORTAINER_DEPLOY_TAG || 'tag' }}=${{ needs.publish.outputs.version }}"
+
+      - name: Record Sentry deploy
+        run: npx @sentry/cli deploys new -e "$DEPLOY_ENV"
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: stegnet
+          SENTRY_PROJECT: stegnet-frontpage
+          SENTRY_RELEASE: frontpage@${{ needs.publish.outputs.version }}
