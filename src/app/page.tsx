@@ -6,9 +6,9 @@ import { useLogger } from "@/lib/logger-context";
 export default function Home() {
   const logger = useLogger();
 
-  logger.info('Rendering home page...', {
-    platform: navigator.userAgent,
-  });
+  useEffect(() => {
+    logger.info('Rendering home page...', { platform: navigator.userAgent });
+  }, [logger]);
   
   return (
     <div className="flex flex-col flex-1 items-center justify-center font-sans bg-zinc-50 dark:bg-gray-900">
