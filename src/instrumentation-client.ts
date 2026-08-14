@@ -6,7 +6,16 @@ import * as Sentry from "@sentry/nextjs";
 import { configure, getConsoleSink, withFilter } from "@logtape/logtape";
 import { getSentrySink } from "@logtape/sentry";
 
-const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_VERCEL_ENV === 'development';
+// Derive the Sentry environment at runtime from the browser hostname, since a
+// single static build serves both staging and production.
+const host = typeof window !== "undefined" ? window.location.hostname : "";
+const environment = host.includes("staging")
+  ? "staging"
+  : host === "localhost" || host.startsWith("127.") || host === ""
+    ? "development"
+    : "production";
+
+const isDevelopment = process.env.NODE_ENV === 'development' || environment === "development";
 
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   console.log('Instrumenting client-sided Sentry...')
@@ -19,7 +28,7 @@ Sentry.init({
   release: process.env.NEXT_PUBLIC_SENTRY_RELEASE
     ? `frontpage@${process.env.NEXT_PUBLIC_SENTRY_RELEASE.replace(/^v/, "")}`
     : undefined,
-  environment: process.env.NEXT_PUBLIC_VERCEL_ENV ?? process.env.NODE_ENV,
+  environment,
 
   // Add optional integrations for additional features
   integrations: [

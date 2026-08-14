@@ -1,0 +1,52 @@
+# Static file server for the Next.js export in /srv.
+#
+# TLS is terminated by the operator's own edge/proxy, so Caddy listens on plain
+# HTTP here. It runs as a non-root user, so it binds the unprivileged port
+# :8080 — the external proxy (Traefik) must target port 8080. To let Caddy
+# handle auto-HTTPS itself instead, replace the `:8080` site label with your
+# domain and expose 443, e.g.:
+#
+#   stegnet.com {
+#       root * /srv
+#       ...
+#   }
+#
+# (Caddy will provision and renew a Let's Encrypt certificate automatically.)
+
+:8080 {
+	root * /srv
+
+	encode zstd gzip
+
+	# Response headers.
+	header {
+		# Enable Sentry browser profiling (replaces the removed Next headers()).
+		Document-Policy "js-profiling"
+
+		# Baseline security headers.
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-X-Powered-By
+
+		# Default: revalidate HTML so deploys are picked up immediately.
+		Cache-Control "no-cache"
+	}
+
+	# Hashed, content-addressed assets never change — cache them hard.
+	@immutable path /_next/static/* /_next/image/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+	# Clean URLs: resolve Next export's per-route .html files, else a real 404
+	# (handle_errors below serves Next's exported 404 page with that status).
+	try_files {path} {path}.html {path}/index.html =404
+
+	file_server
+
+	# Serve Next's exported 404 page with the right status.
+	handle_errors {
+		@notfound expression {err.status_code} == 404
+		rewrite @notfound /404.html
+		file_server
+	}
+}
