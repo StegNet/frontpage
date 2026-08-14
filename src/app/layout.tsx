@@ -20,6 +20,13 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://stegnet.com"),
   title: "StegNet",
   description: "Welcome to StegNet.",
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: "StegNet",
     description: "Welcome to StegNet.",
