@@ -44,6 +44,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "StegNet",
+              url: "https://stegnet.com",
+            }),
+          }}
+        />
         <LoggerProvider>
           <ThemeProvider
             attribute="class"
