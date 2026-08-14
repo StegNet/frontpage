@@ -52,6 +52,7 @@ The image builds the static export and serves it with Caddy on port **8080**
 docker build \
   --build-arg VERSION=1.2.3 \
   --build-arg COMMIT_SHA="$(git rev-parse HEAD)" \
+  --build-arg NEXT_PUBLIC_SENTRY_DSN="$NEXT_PUBLIC_SENTRY_DSN" \
   --secret id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN \
   -t stegnet-frontpage .
 ```
