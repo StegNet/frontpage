@@ -43,7 +43,7 @@ jobs:
           context: .
           push: true
           build-args: |
-            VERSION=${{ steps.meta.outputs.tag }}
+            VERSION=${{ steps.meta.outputs.version }}
             COMMIT_SHA=${{ github.sha }}
             NEXT_PUBLIC_SENTRY_DSN=${{ vars.NEXT_PUBLIC_SENTRY_DSN }}
           secrets: |

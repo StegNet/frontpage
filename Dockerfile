@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1.7
 # deps -> build (static export) -> caddy
 
 FROM oven/bun:1 AS deps
@@ -19,17 +18,20 @@ COPY public ./public
 COPY src ./src
 COPY tsconfig.json next.config.ts postcss.config.mjs ./
 
-# vars expanded in shell (ENV can't do ${VERSION#v} strip in stable syntax).
-# token via secret env= (not baked); CI=true un-silences sentry so a bad
-# token fails loud instead of skipping.
+# baked into the client bundle. VERSION arrives already v-stripped from the
+# workflow (it reuses the tag it computes for the image), so plain ENV works.
+# CI=true un-silences sentry.
+ENV NEXT_PUBLIC_APP_VERSION=${VERSION:-latest}
+ENV NEXT_PUBLIC_COMMIT_SHA=${COMMIT_SHA:-localbuild}
+ENV SENTRY_RELEASE=${VERSION:-latest}
+ENV NEXT_PUBLIC_SENTRY_RELEASE=${VERSION:-latest}
+ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
+ENV CI=true
+
+# token only exists inside this RUN (secret mount, never baked into a layer)
 RUN --mount=type=cache,target=/usr/src/app/.next/cache \
-    --mount=type=secret,id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN \
-    CI=true \
-    NEXT_PUBLIC_APP_VERSION="${VERSION#v}" \
-    NEXT_PUBLIC_COMMIT_SHA="${COMMIT_SHA:-localbuild}" \
-    SENTRY_RELEASE="${VERSION#v}" \
-    NEXT_PUBLIC_SENTRY_RELEASE="${VERSION#v}" \
-    NEXT_PUBLIC_SENTRY_DSN="$NEXT_PUBLIC_SENTRY_DSN" \
+    --mount=type=secret,id=SENTRY_AUTH_TOKEN \
+    SENTRY_AUTH_TOKEN="$(cat /run/secrets/SENTRY_AUTH_TOKEN 2>/dev/null)" \
     bun run build
 
 # optional local hot-reload: docker build --target dev (bind-mount source)
