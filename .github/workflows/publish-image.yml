@@ -47,6 +47,10 @@ jobs:
           context: .
           push: true
           provenance: false
+          # Explicit BuildKit layer cache in GHCR (the sticky disk isn't
+          # persisting). Exports during the build, so it survives teardown.
+          cache-from: type=registry,ref=${{ steps.meta.outputs.image_repo }}:buildcache
+          cache-to: type=registry,ref=${{ steps.meta.outputs.image_repo }}:buildcache,mode=max
           build-args: |
             VERSION=${{ steps.meta.outputs.version }}
             COMMIT_SHA=${{ github.sha }}
