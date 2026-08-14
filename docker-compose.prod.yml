@@ -1,6 +1,6 @@
 services:
   frontpage:
-    image: ghcr.io/stegnet/frontpage
+    image: ghcr.io/stegnet/frontpage:latest
     tty: true
     stdin_open: true
     networks:
