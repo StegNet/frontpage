@@ -16,7 +16,7 @@ WORKDIR /usr/src/app
 ARG VERSION
 ARG COMMIT_SHA
 ENV NEXT_PUBLIC_APP_VERSION=${VERSION#v}
-ENV NEXT_PUBLIC_COMMIT_SHA=${COMMIT_SHA:-localbuild}
+ENV NEXT_PUBLIC_COMMIT_SHA=${COMMIT_SHA:-local}
 
 # Application source and build-time config.
 # NOTE: sentry.server.config.ts / sentry.edge.config.ts are intentionally NOT
