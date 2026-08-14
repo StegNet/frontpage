@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useLogger } from "@/lib/logger-context";
+import { Badge } from "@/components/ui/badge";
 
 export default function Home() {
   const logger = useLogger();
@@ -18,13 +19,13 @@ export default function Home() {
         className="pointer-events-none absolute left-1/2 top-1/3 -z-10 h-[40rem] w-[40rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-tr from-amber-500/20 via-fuchsia-500/10 to-transparent blur-3xl"
       />
 
-      <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
+      <Badge variant="outline" className="mb-6 gap-2 text-muted-foreground">
         <span className="relative flex h-2 w-2">
           <span className="absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75 motion-safe:animate-ping" />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500" />
         </span>
         StegNet
-      </span>
+      </Badge>
 
       <h1 className="max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-6xl">
         We&apos;re cooking up something awesome.
