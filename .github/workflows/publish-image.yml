@@ -35,7 +35,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Blacksmith Builder
-        uses: useblacksmith/setup-docker-builder@v1
+        uses: useblacksmith/setup-docker-builder@v2
+        with:
+          # Stable key so the layer-cache sticky disk is shared across every run.
+          # Must NOT vary per tag/sha, or each build gets a fresh (cold) disk.
+          cache-key: ${{ github.repository }}
 
       - name: Build and push Docker image to GHCR
         uses: useblacksmith/build-push-action@v2
