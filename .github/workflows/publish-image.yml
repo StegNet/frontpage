@@ -43,6 +43,7 @@ jobs:
           build-args: |
             VERSION=${{ steps.meta.outputs.tag }}
             COMMIT_SHA=${{ github.sha }}
+            NEXT_PUBLIC_SENTRY_DSN=${{ vars.NEXT_PUBLIC_SENTRY_DSN }}
           secrets: |
             SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
           tags: |
