@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Version tag to build (e.g. v1.2.3)"
+        required: true
+        type: string
 
 jobs:
   publish:
@@ -20,7 +26,8 @@ jobs:
       - name: Resolve version and image tags
         id: meta
         run: |
-          tag="${GITHUB_REF_NAME}"
+          # On manual dispatch the ref is a branch, so take the tag from input.
+          tag="${{ inputs.tag || github.ref_name }}"
           version="${tag#v}"
           repo_lc="${GITHUB_REPOSITORY,,}"
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
@@ -47,10 +54,9 @@ jobs:
           context: .
           push: true
           provenance: false
-          # Explicit BuildKit layer cache in GHCR (the sticky disk isn't
-          # persisting). Exports during the build, so it survives teardown.
-          cache-from: type=registry,ref=${{ steps.meta.outputs.image_repo }}:buildcache
-          cache-to: type=registry,ref=${{ steps.meta.outputs.image_repo }}:buildcache,mode=max
+          # Layer cache lives on the Blacksmith sticky disk, keyed by the
+          # stable cache-key in Setup Blacksmith Builder above. No explicit
+          # cache-from/cache-to needed — the builder wires it up automatically.
           build-args: |
             VERSION=${{ steps.meta.outputs.version }}
             COMMIT_SHA=${{ github.sha }}
@@ -64,8 +70,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: Release ${{ steps.meta.outputs.tag }}
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
