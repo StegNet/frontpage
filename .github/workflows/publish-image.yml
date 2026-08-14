@@ -34,8 +34,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Setup Blacksmith Builder
+        uses: useblacksmith/setup-docker-builder@v1
 
       - name: Build and push Docker image to GHCR
         uses: useblacksmith/build-push-action@v2
@@ -64,7 +64,7 @@ jobs:
   # Tell Portainer to pull the freshly-pushed image tag and redeploy.
   request-update:
     needs: publish
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     timeout-minutes: 5
     environment:
       name: production
