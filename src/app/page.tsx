@@ -9,12 +9,31 @@ export default function Home() {
   useEffect(() => {
     logger.info('Rendering home page...', { platform: navigator.userAgent });
   }, [logger]);
-  
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center font-sans bg-zinc-50 dark:bg-gray-900">
-      <h1> We are cooking up something awesome... </h1>
-      <hr className="w-96 h-1 mx-auto my-4 border-0 rounded-sm md:my-10 bg-gray-900 dark:bg-amber-50" />
-      <p> Pardon the lack of detail, we will reach out when we have more info for you. Check back soon-ish!</p>
-    </div>
+    <main className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-6 text-center">
+      {/* Soft background accent — decorative only. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-1/3 -z-10 h-[40rem] w-[40rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-tr from-amber-500/20 via-fuchsia-500/10 to-transparent blur-3xl"
+      />
+
+      <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
+        <span className="relative flex h-2 w-2">
+          <span className="absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75 motion-safe:animate-ping" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500" />
+        </span>
+        StegNet
+      </span>
+
+      <h1 className="max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-6xl">
+        We&apos;re cooking up something awesome.
+      </h1>
+
+      <p className="mt-6 max-w-md text-balance text-base text-muted-foreground sm:text-lg">
+        Pardon the lack of detail — we&apos;ll reach out when we have more for
+        you. Check back soon-ish.
+      </p>
+    </main>
   );
 }
