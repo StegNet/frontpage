@@ -1,6 +1,15 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect } from "react";
+import { useLogger } from "@/lib/logger-context";
 
 export default function Home() {
+  const logger = useLogger();
+
+  useEffect(() => {
+    logger.info('Rendering home page...', { platform: navigator.userAgent });
+  }, [logger]);
+  
   return (
     <div className="flex flex-col flex-1 items-center justify-center font-sans bg-zinc-50 dark:bg-gray-900">
       <h1> We are cooking up something awesome... </h1>

@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
+    "@logtape/logtape": "^2.3.1",
+    "@logtape/sentry": "^2.3.1",
     "@sentry/nextjs": "^10.70.0",
     "@sentry/profiling-node": "^10.70.0",
     "@vercel/analytics": "^2.0.1",

@@ -3,6 +3,10 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import { configure, getConsoleSink, withFilter } from "@logtape/logtape";
+import { getSentrySink } from "@logtape/sentry";
+
+const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_VERCEL_ENV === 'development';
 
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   console.log('Instrumenting client-sided Sentry...')
@@ -54,3 +58,17 @@ Sentry.init({
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
 
 console.log('Client-sided Sentry instrumented!');
+
+await configure({
+  sinks: {
+    console: withFilter(getConsoleSink(), isDevelopment ? 'debug' : 'info'),
+    sentry: withFilter(getSentrySink({ sentry: Sentry }), 'info'),
+  },
+  loggers: [
+    {
+      category: 'frontpage',
+      lowestLevel: 'debug',
+      sinks: ['console', 'sentry'],
+    },
+  ],
+});
