@@ -17,7 +17,8 @@ ARG COMMIT_SHA
 ARG NEXT_PUBLIC_SENTRY_DSN
 
 # sentry.server/edge configs skipped — no server runtime in a static export
-COPY public ./public
+# no `public/` dir: static assets (favicon, robots.txt) live under src/app.
+# Re-add `COPY public ./public` here if one is ever introduced.
 COPY src ./src
 COPY tsconfig.json next.config.ts postcss.config.mjs ./
 
