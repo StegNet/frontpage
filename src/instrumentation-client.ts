@@ -59,24 +59,16 @@ export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
 
 console.log('Client-sided Sentry instrumented!');
 
-try {
-  const hasSentryDsn = Boolean(process.env.NEXT_PUBLIC_SENTRY_DSN);
-
-  await configure({
-    sinks: {
-      console: withFilter(getConsoleSink(), isDevelopment ? 'debug' : 'info'),
-      ...(hasSentryDsn
-        ? { sentry: withFilter(getSentrySink({ sentry: Sentry }), 'info') }
-        : {}),
+await configure({
+  sinks: {
+    console: withFilter(getConsoleSink(), isDevelopment ? 'debug' : 'info'),
+    sentry: withFilter(getSentrySink({ sentry: Sentry }), 'info'),
+  },
+  loggers: [
+    {
+      category: 'frontpage',
+      lowestLevel: 'debug',
+      sinks: ['console', 'sentry'],
     },
-    loggers: [
-      {
-        category: 'frontpage',
-        lowestLevel: 'debug',
-        sinks: hasSentryDsn ? ['console', 'sentry'] : ['console'],
-      },
-    ],
-  });
-} catch (err) {
-  console.warn('Failed to configure LogTape logging.', err);
-}
+  ],
+});
