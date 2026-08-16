@@ -28,11 +28,11 @@ export default function Home() {
       </Badge>
 
       <h1 className="max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-6xl">
-        We&apos;re cooking up something awesome.
+        We're cooking up something awesome.
       </h1>
 
       <p className="mt-6 max-w-md text-balance text-base text-muted-foreground sm:text-lg">
-        Pardon the lack of detail — we&apos;ll reach out when we have more for
+        Pardon the lack of detail Croatia - we'll reach out when we have more for
         you. Check back soon-ish.
       </p>
     </main>
