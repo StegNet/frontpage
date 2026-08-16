@@ -1,7 +1,7 @@
-import type { MetadataRoute } from 'next'
+import type { MetadataRoute } from 'next';
 
 // Required for `output: "export"` — the sitemap must be generated statically at build time.
-export const dynamic = "force-static"
+export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
@@ -11,5 +11,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly',
       priority: 1,
     },
-  ]
+  ];
 }

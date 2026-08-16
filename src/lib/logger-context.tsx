@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { createContext, useContext, useMemo } from "react";
-import { getLogger, type Logger } from "@logtape/logtape";
+import { createContext, useContext, useMemo } from 'react';
+import { getLogger, type Logger } from '@logtape/logtape';
 
-const ROOT_CATEGORY = ["frontpage", "app"];
+const ROOT_CATEGORY = ['frontpage', 'app'];
 
 interface LoggerContextValue {
   logger: Logger;
@@ -16,9 +16,7 @@ export function LoggerProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo(() => ({ logger }), [logger]);
 
   return (
-    <LoggerContext.Provider value={value}>
-      {children}
-    </LoggerContext.Provider>
+    <LoggerContext.Provider value={value}>{children}</LoggerContext.Provider>
   );
 }
 
@@ -30,5 +28,8 @@ export function useLogger(): Logger {
 
 export function useChildLogger(category: string): Logger {
   const parentLogger = useLogger();
-  return useMemo(() => parentLogger.getChild(category), [parentLogger, category]);
+  return useMemo(
+    () => parentLogger.getChild(category),
+    [parentLogger, category],
+  );
 }

@@ -1,9 +1,9 @@
-import { withSentryConfig } from "@sentry/nextjs";
-import type { NextConfig } from "next";
+import { withSentryConfig } from '@sentry/nextjs';
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   // Emit a fully static site into `out/` — served by Caddy, no Node server.
-  output: "export",
+  output: 'export',
 
   // No image optimizer without a server; serve the original assets as-is.
   images: {
@@ -30,7 +30,7 @@ export default withSentryConfig(nextConfig, {
 
   release: {
     name: process.env.SENTRY_RELEASE
-      ? `frontpage@${process.env.SENTRY_RELEASE.replace(/^v/, "")}`
+      ? `frontpage@${process.env.SENTRY_RELEASE.replace(/^v/, '')}`
       : undefined,
     // Deploy is recorded at deploy time (in the workflow's environment-scoped
     // job), not here — the build produces one env-agnostic image.
@@ -42,5 +42,5 @@ export default withSentryConfig(nextConfig, {
       // Automatically tree-shake Sentry logger statements to reduce bundle size
       removeDebugLogging: true,
     },
-  }
+  },
 });

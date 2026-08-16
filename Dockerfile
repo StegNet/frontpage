@@ -1,7 +1,9 @@
 # deps -> build (static export) -> caddy
 
+ARG BUN_IMAGE=oven/bun:1.2.23
+FROM ${BUN_IMAGE} AS bun
 FROM node:24-slim AS deps
-COPY --from=oven/bun:1 /usr/local/bin/bun /usr/local/bin/bun
+COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
 WORKDIR /usr/src/app
 # ca-certificates: sentry-cli needs them to reach the Sentry API over HTTPS at build
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
