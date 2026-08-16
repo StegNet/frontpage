@@ -25,11 +25,11 @@ Then open http://localhost:3000.
 
 Local env lives in `.env.local` (gitignored). The site reads:
 
-| Variable | Purpose |
-| --- | --- |
-| `NEXT_PUBLIC_SENTRY_DSN` | Sentry DSN (public) |
+| Variable                  | Purpose                                    |
+| ------------------------- | ------------------------------------------ |
+| `NEXT_PUBLIC_SENTRY_DSN`  | Sentry DSN (public)                        |
 | `NEXT_PUBLIC_APP_VERSION` | Version shown in the footer (set at build) |
-| `NEXT_PUBLIC_COMMIT_SHA` | Commit shown in the footer (set at build) |
+| `NEXT_PUBLIC_COMMIT_SHA`  | Commit shown in the footer (set at build)  |
 
 Sentry `environment` is derived at runtime from the hostname (`staging.*` →
 staging, `localhost` → development, otherwise production), so one build serves

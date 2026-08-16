@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect } from "react";
-import { useLogger } from "@/lib/logger-context";
-import { Badge } from "@/components/ui/badge";
+import { useEffect } from 'react';
+import { useLogger } from '@/lib/logger-context';
+import { Badge } from '@/components/ui/badge';
 
 export default function Home() {
   const logger = useLogger();
