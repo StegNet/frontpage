@@ -1,9 +1,7 @@
 # deps -> build (static export) -> caddy
 
-# Pinned: floating `oven/bun:1` dragged us onto 1.3.14, which SIGILLs on some
-# Blacksmith CPUs (intermittent exit 132 after a successful build). 1.2.23 is
-# the last 1.2 release, before that regression. Bump deliberately, not by drift.
-FROM oven/bun:1.2.23 AS deps
+FROM node:24-slim AS deps
+COPY --from=oven/bun:1.2.23 /usr/local/bin/bun /usr/local/bin/bun
 WORKDIR /usr/src/app
 # ca-certificates: sentry-cli needs them to reach the Sentry API over HTTPS at build
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
