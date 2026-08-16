@@ -1,6 +1,9 @@
 # deps -> build (static export) -> caddy
 
 FROM node:24-slim AS deps
+# Bun pinned to 1.2.23 on purpose: 1.3.x (what `packageManager` declares for
+# local dev) SIGILLs on some Blacksmith CPUs (intermittent exit 132 after a
+# successful build). Do not "align" this with package.json; bump deliberately.
 COPY --from=oven/bun:1.2.23 /usr/local/bin/bun /usr/local/bin/bun
 WORKDIR /usr/src/app
 # ca-certificates: sentry-cli needs them to reach the Sentry API over HTTPS at build
