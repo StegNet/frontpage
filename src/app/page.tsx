@@ -62,9 +62,9 @@ export default function Home() {
       </p>
 
       <p className="mt-6 max-w-xl text-balance text-base text-muted-foreground sm:text-lg">
-        A non-profit association from Croatia, promoting IT,
-        computing and digital technologies as well as fostering a culture of
-        innovation and entrepreneurship.
+        A non-profit association from Croatia, promoting IT, computing and
+        digital technologies as well as fostering a culture of innovation and
+        entrepreneurship.
       </p>
 
       <Separator className="my-16 max-w-xs" />
