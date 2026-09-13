@@ -16,10 +16,13 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+const siteDescription =
+  'Udruga za digitalne tehnologije StegNet — StegNet Digital Technologies Association, Vinež, Croatia.';
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://stegnet.com'),
   title: 'StegNet',
-  description: 'Welcome to StegNet.',
+  description: siteDescription,
   alternates: {
     canonical: '/',
   },
@@ -29,7 +32,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'StegNet',
-    description: 'Welcome to StegNet.',
+    description: siteDescription,
     url: 'https://stegnet.com',
     siteName: 'StegNet',
     type: 'website',
@@ -51,6 +54,8 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
               '@context': 'https://schema.org',
               '@type': 'Organization',
               name: 'StegNet',
+              legalName: 'Udruga za digitalne tehnologije StegNet',
+              alternateName: 'StegNet Digital Technologies Association',
               url: 'https://stegnet.com',
             }),
           }}
