@@ -26,6 +26,10 @@ jobs:
     name: Capture and upload
     runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 15
+    env:
+      # Exposed at job level so the upload step can test for it; `secrets` is
+      # not available inside step `if:` expressions.
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -46,8 +50,10 @@ jobs:
         run: bunx playwright install --with-deps chromium
 
       - name: Build static site
-        # No SENTRY_AUTH_TOKEN here on purpose: PR builds must not create
-        # releases or upload source maps.
+        # Token blanked on purpose: PR builds must not create releases or
+        # upload source maps.
+        env:
+          SENTRY_AUTH_TOKEN: ''
         run: bun run build
 
       - name: Capture snapshots
@@ -55,9 +61,7 @@ jobs:
 
       - name: Upload snapshots to Sentry
         # Fork PRs have no access to secrets; skip rather than fail.
-        if: ${{ secrets.SENTRY_AUTH_TOKEN != '' }}
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        if: env.SENTRY_AUTH_TOKEN != ''
         # head/base sha, PR number and repo are auto-detected from the
         # GitHub Actions environment.
         run: bun run snapshots:upload
