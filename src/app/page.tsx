@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect } from 'react';
+import Link from 'next/link';
 import { useLogger } from '@/lib/logger-context';
+import { formattedAddress, org } from '@/lib/org';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -12,6 +14,8 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 const leadership = [
   {
@@ -67,6 +71,21 @@ export default function Home() {
         entrepreneurship.
       </p>
 
+      <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <Link
+          href="/about"
+          className={cn(buttonVariants({ variant: 'default', size: 'lg' }))}
+        >
+          About the association
+        </Link>
+        <Link
+          href="/contact"
+          className={cn(buttonVariants({ variant: 'outline', size: 'lg' }))}
+        >
+          Contact us
+        </Link>
+      </div>
+
       <Separator className="my-16 max-w-xs" />
 
       <section aria-labelledby="leadership" className="w-full max-w-4xl">
@@ -100,6 +119,46 @@ export default function Home() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <Separator className="my-16 max-w-xs" />
+
+      <section aria-labelledby="details" className="w-full max-w-4xl">
+        <h2
+          id="details"
+          className="text-2xl font-semibold tracking-tight sm:text-3xl"
+        >
+          Association details
+        </h2>
+        <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+          Official registration and contact information.
+        </p>
+
+        <dl className="mx-auto mt-8 grid max-w-xl gap-x-8 gap-y-3 text-left text-sm sm:grid-cols-[max-content_1fr] sm:text-base">
+          <dt className="font-medium">Legal name</dt>
+          <dd className="text-muted-foreground">{org.legalName}</dd>
+
+          <dt className="font-medium">OIB</dt>
+          <dd className="font-mono text-muted-foreground">{org.oib}</dd>
+
+          <dt className="font-medium">Registarski broj</dt>
+          <dd className="font-mono text-muted-foreground">
+            {org.registryNumber}
+          </dd>
+
+          <dt className="font-medium">Sjedište</dt>
+          <dd className="text-muted-foreground">{formattedAddress}</dd>
+
+          <dt className="font-medium">Email</dt>
+          <dd>
+            <a
+              href={`mailto:${org.email}`}
+              className="text-muted-foreground hover:text-foreground hover:underline"
+            >
+              {org.email}
+            </a>
+          </dd>
+        </dl>
       </section>
     </main>
   );

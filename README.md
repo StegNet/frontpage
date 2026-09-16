@@ -43,6 +43,26 @@ bun run build
 
 Produces a static site in `out/`.
 
+## Visual regression (Sentry Snapshots)
+
+`.github/workflows/snapshots.yml` screenshots every page (desktop + mobile,
+light + dark) with Playwright and uploads them to
+[Sentry Snapshots](https://docs.sentry.io/product/snapshots/). On pull requests
+Sentry diffs against the latest `main` build and posts a **Snapshot Testing**
+status check; review and approve visual changes in Sentry.
+
+Run it locally:
+
+```bash
+bunx playwright install chromium   # once
+bun run build
+bun run snapshots                  # writes snapshots/out/**/*.png
+```
+
+`bun run snapshots:upload` pushes the images to Sentry (needs
+`SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT`). Filenames are the diff
+key, so keep the naming in `snapshots/pages.spec.ts` stable.
+
 ## Docker
 
 The image builds the static export and serves it with Caddy on port **8080**

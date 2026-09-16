@@ -1,0 +1,75 @@
+name: Sentry Snapshots
+
+# Visual regression via Sentry Snapshots: build the static export, screenshot
+# every page with Playwright, upload to Sentry. On PRs Sentry diffs against the
+# base build from `main` and posts a "Snapshot Testing" status check.
+# https://docs.sentry.io/product/snapshots/
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: snapshots-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SENTRY_ORG: stegnet
+  SENTRY_PROJECT: stegnet-frontpage
+
+jobs:
+  snapshots:
+    name: Capture and upload
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    timeout-minutes: 15
+    env:
+      # Exposed at job level so the upload step can test for it; `secrets` is
+      # not available inside step `if:` expressions.
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          # Screenshot the PR head, not GitHub's synthetic merge commit, so the
+          # sha Sentry records matches the one on the PR.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          # Full history so sentry-cli can find the merge-base for base-sha.
+          fetch-depth: 0
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps chromium
+
+      - name: Build static site
+        # Token blanked on purpose: PR builds must not create releases or
+        # upload source maps.
+        env:
+          SENTRY_AUTH_TOKEN: ''
+        run: bun run build
+
+      - name: Capture snapshots
+        run: bun run snapshots
+
+      - name: Upload snapshots to Sentry
+        # Fork PRs have no access to secrets; skip rather than fail.
+        if: env.SENTRY_AUTH_TOKEN != ''
+        # head/base sha, PR number and repo are auto-detected from the
+        # GitHub Actions environment.
+        run: bun run snapshots:upload
+
+      - name: Upload snapshots as workflow artifact
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: snapshots-${{ github.event.pull_request.head.sha || github.sha }}
+          path: snapshots/out
+          retention-days: 7

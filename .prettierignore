@@ -2,3 +2,5 @@
 out/
 build/
 bun.lock
+snapshots/out/
+snapshots/.results/
