@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ModeToggle } from '@/components/theme-switcher';
 import { Footer } from '@/components/footer';
+import { SiteNav } from '@/components/site-nav';
+import { org } from '@/lib/org';
 import { LoggerProvider } from '@/lib/logger-context';
 import './globals.css';
 
@@ -52,11 +54,33 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type': 'Organization',
-              name: 'StegNet',
-              legalName: 'Udruga za digitalne tehnologije StegNet',
-              alternateName: 'StegNet Digital Technologies Association',
-              url: 'https://stegnet.com',
+              '@type': 'NGO',
+              name: org.name,
+              legalName: org.legalName,
+              alternateName: org.alternateName,
+              url: org.url,
+              email: org.email,
+              taxID: org.oib,
+              identifier: [
+                {
+                  '@type': 'PropertyValue',
+                  propertyID: 'OIB',
+                  value: org.oib,
+                },
+                {
+                  '@type': 'PropertyValue',
+                  propertyID: 'Registarski broj',
+                  value: org.registryNumber,
+                },
+              ],
+              address: {
+                '@type': 'PostalAddress',
+                streetAddress: org.address.street,
+                postalCode: org.address.postalCode,
+                addressLocality: org.address.city,
+                addressRegion: org.address.region,
+                addressCountry: org.address.countryCode,
+              },
             }),
           }}
         />
@@ -67,6 +91,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
             enableSystem
             disableTransitionOnChange
           >
+            <SiteNav />
             <div className="fixed top-4 right-4 z-50">
               <ModeToggle />
             </div>
