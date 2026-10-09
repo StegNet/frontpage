@@ -36,6 +36,9 @@ Sentry.init({
     Sentry.replayIntegration(),
     Sentry.browserTracingIntegration(),
     Sentry.browserProfilingIntegration(),
+    Sentry.consoleLoggingIntegration({
+      levels: ["log", "warn", "error", "debug", "info"],
+    }),
   ],
   tracePropagationTargets: [
     'localhost',
@@ -46,8 +49,6 @@ Sentry.init({
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: process.env.NODE_ENV === 'production' ? 1.0 : 1.0,
   profileSessionSampleRate: process.env.NODE_ENV === 'production' ? 1.0 : 1.0,
-
-  enableLogs: true,
 
   // Define how likely Replay events are sampled.
   // This sets the sample rate to be 10%. You may want this to be 100% while
