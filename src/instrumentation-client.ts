@@ -36,9 +36,6 @@ Sentry.init({
     Sentry.replayIntegration(),
     Sentry.browserTracingIntegration(),
     Sentry.browserProfilingIntegration(),
-    Sentry.consoleLoggingIntegration({
-      levels: ['log', 'warn', 'error', 'debug', 'info'],
-    }),
   ],
   tracePropagationTargets: [
     'localhost',
