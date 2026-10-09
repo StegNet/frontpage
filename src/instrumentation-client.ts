@@ -37,7 +37,7 @@ Sentry.init({
     Sentry.browserTracingIntegration(),
     Sentry.browserProfilingIntegration(),
     Sentry.consoleLoggingIntegration({
-      levels: ["log", "warn", "error", "debug", "info"],
+      levels: ['log', 'warn', 'error', 'debug', 'info'],
     }),
   ],
   tracePropagationTargets: [
