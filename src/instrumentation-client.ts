@@ -4,6 +4,7 @@
 
 import * as Sentry from '@sentry/nextjs';
 import { configure, getConsoleSink, withFilter } from '@logtape/logtape';
+import { getSentrySink } from '@logtape/sentry';
 
 // Derive the Sentry environment at runtime from the browser hostname, since a
 // single static build serves both staging and production.
@@ -72,12 +73,13 @@ console.log('Client-sided Sentry instrumented!');
 await configure({
   sinks: {
     console: withFilter(getConsoleSink(), isDevelopment ? 'debug' : 'info'),
+    sentry: withFilter(getSentrySink({ sentry: Sentry }), 'info'),
   },
   loggers: [
     {
       category: 'frontpage',
       lowestLevel: 'debug',
-      sinks: ['console'],
+      sinks: ['console', 'sentry'],
     },
   ],
 });
