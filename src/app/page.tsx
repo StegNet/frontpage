@@ -21,19 +21,19 @@ const leadership = [
   {
     name: 'Max Lucas Gobo',
     initials: 'MG',
-    role: 'President',
+    roles: ['President', 'Information Security Lead'],
     title: 'Predsjednik udruge',
   },
   {
     name: 'Noa Hrvat',
     initials: 'NH',
-    role: 'Vice President',
+    roles: ['Vice President'],
     title: 'Podpredsjednik udruge',
   },
   {
     name: 'Adrian Franković',
     initials: 'AF',
-    role: 'Secretary',
+    roles: ['Secretary'],
     title: 'Tajnik udruge',
   },
 ];
@@ -112,8 +112,12 @@ export default function Home() {
                   <CardTitle className="text-lg">{person.name}</CardTitle>
                   <CardDescription>{person.title}</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Badge variant="secondary">{person.role}</Badge>
+                <CardContent className="flex flex-wrap justify-center gap-2">
+                  {person.roles.map((role) => (
+                    <Badge key={role} variant="secondary">
+                      {role}
+                    </Badge>
+                  ))}
                 </CardContent>
               </Card>
             </li>
