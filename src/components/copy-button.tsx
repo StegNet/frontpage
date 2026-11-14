@@ -27,18 +27,24 @@ export function CopyButton({
   useEffect(() => () => clearTimeout(timeout.current), []);
 
   async function copy() {
+    let next: CopyState;
     try {
       await navigator.clipboard.writeText(value);
-      setState('copied');
+      next = 'copied';
     } catch {
-      setState('error');
+      next = 'error';
     }
+    setState(next);
     clearTimeout(timeout.current);
-    timeout.current = setTimeout(() => setState('idle'), 2000);
+    // Leave the manual-copy guidance up long enough to read.
+    timeout.current = setTimeout(
+      () => setState('idle'),
+      next === 'error' ? 6000 : 2000,
+    );
   }
 
   return (
-    <>
+    <span className="relative inline-flex shrink-0">
       <Button
         type="button"
         variant="ghost"
@@ -64,6 +70,11 @@ export function CopyButton({
             ? `Could not copy ${label}`
             : ''}
       </span>
-    </>
+      {state === 'error' && (
+        <span className="absolute top-full right-0 z-10 mt-1 w-max max-w-56 rounded-md bg-popover px-2 py-1 text-xs text-popover-foreground shadow-md ring-1 ring-foreground/10">
+          Couldn&apos;t copy. Select the {label} and copy it manually.
+        </span>
+      )}
+    </span>
   );
 }
