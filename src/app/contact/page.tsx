@@ -1,5 +1,18 @@
 import type { Metadata } from 'next';
-import { Mail, MapPin } from 'lucide-react';
+import {
+  ArrowUpRight,
+  ExternalLink,
+  FileText,
+  Handshake,
+  Mail,
+  MapPin,
+  Send,
+  ShieldCheck,
+  Users,
+  type LucideIcon,
+} from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { buttonVariants } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -7,73 +20,267 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { org } from '@/lib/org';
+import { Separator } from '@/components/ui/separator';
+import { CopyButton } from '@/components/copy-button';
+import { formattedAddress, org } from '@/lib/org';
+import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
   title: 'Contact — StegNet',
   description:
-    'Contact Udruga za digitalne tehnologije StegNet — email and registered office address in Labin, Istria, Croatia.',
+    'Contact Udruga za digitalne tehnologije StegNet — email, registered office address in Labin, Istria, Croatia, and official registration details.',
   alternates: {
     canonical: '/contact',
   },
 };
 
+/** Builds a mailto: link with a pre-filled subject and body. */
+function mailto(subject: string, body?: string) {
+  const params = [`subject=${encodeURIComponent(subject)}`];
+  if (body) params.push(`body=${encodeURIComponent(body)}`);
+  return `mailto:${org.email}?${params.join('&')}`;
+}
+
+const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(formattedAddress)}`;
+
+const topics: {
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  subject: string;
+  body: string;
+}[] = [
+  {
+    title: 'Membership',
+    description: 'Joining the association or questions about being a member.',
+    icon: Users,
+    subject: 'Membership enquiry',
+    body: 'Hi StegNet,\n\nI would like to know more about membership.\n\nName:\nAbout me:\n\n',
+  },
+  {
+    title: 'Collaboration',
+    description: 'Partnerships, joint projects, events or sponsorship.',
+    icon: Handshake,
+    subject: 'Collaboration proposal',
+    body: 'Hi StegNet,\n\nI would like to propose a collaboration.\n\nOrganisation:\nIdea in brief:\n\n',
+  },
+  {
+    title: 'Security report',
+    description: 'Responsibly disclose a vulnerability in one of our systems.',
+    icon: ShieldCheck,
+    subject: 'Security report',
+    body: 'Hi StegNet,\n\nI would like to report a potential security issue.\n\nAffected URL / system:\nDescription:\nSteps to reproduce:\nImpact:\n\n',
+  },
+  {
+    title: 'Official matters',
+    description: 'Invoices, documents and administrative correspondence.',
+    icon: FileText,
+    subject: 'Administrative enquiry',
+    body: 'Hi StegNet,\n\n',
+  },
+];
+
+const officialDetails = [
+  { label: 'Legal name', value: org.legalName, mono: false },
+  { label: 'OIB', value: org.oib, mono: true },
+  { label: 'Registarski broj', value: org.registryNumber, mono: true },
+] as const;
+
+function IconTile({ icon: Icon }: { icon: LucideIcon }) {
+  return (
+    <span
+      aria-hidden
+      className="mb-3 flex size-10 items-center justify-center rounded-lg bg-muted text-foreground ring-1 ring-foreground/10"
+    >
+      <Icon className="size-5" />
+    </span>
+  );
+}
+
 export default function Contact() {
   return (
-    <main className="relative flex flex-1 flex-col items-center px-6 py-24 text-center">
+    <main className="relative flex flex-1 flex-col items-center overflow-hidden px-6 py-24">
       <div
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-1/3 -z-10 h-[40rem] w-[40rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-tr from-amber-500/20 via-fuchsia-500/10 to-transparent blur-3xl"
       />
 
-      <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
-        Contact
-      </h1>
-      <p className="mt-4 max-w-xl text-balance text-base text-muted-foreground sm:text-lg">
-        Questions about the association, membership or collaboration? Reach us
-        by email or at our registered office.
-      </p>
+      {/* Header */}
+      <div className="flex flex-col items-center text-center">
+        <Badge variant="outline" className="mb-6 text-muted-foreground">
+          Get in touch
+        </Badge>
+        <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
+          Contact us
+        </h1>
+        <p className="mt-4 max-w-xl text-balance text-base text-muted-foreground sm:text-lg">
+          Questions about the association, membership or collaboration? Email is
+          the best way to reach us — we read every message.
+        </p>
+      </div>
 
-      <div className="mt-12 grid w-full max-w-3xl gap-4 sm:grid-cols-2">
-        <Card className="h-full items-center text-center">
-          <CardHeader className="w-full justify-items-center">
-            <Mail aria-hidden className="mb-2 size-6 text-muted-foreground" />
+      {/* Primary channels */}
+      <section
+        aria-label="Contact channels"
+        className="mt-12 grid w-full max-w-4xl gap-4 md:grid-cols-5"
+      >
+        <Card className="md:col-span-3">
+          <CardHeader>
+            <IconTile icon={Mail} />
             <CardTitle className="text-lg">Email</CardTitle>
-            <CardDescription>Administrative contact</CardDescription>
+            <CardDescription>
+              The fastest way to reach the association.
+            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="mt-auto space-y-4">
+            <div className="flex items-center gap-1">
+              <a
+                href={`mailto:${org.email}`}
+                className="truncate text-xl font-semibold tracking-tight hover:underline sm:text-2xl"
+              >
+                {org.email}
+              </a>
+              <CopyButton value={org.email} label="email address" />
+            </div>
             <a
               href={`mailto:${org.email}`}
-              className="font-medium hover:underline"
+              className={cn(buttonVariants({ size: 'lg' }), 'px-3')}
             >
-              {org.email}
+              <Send aria-hidden data-icon="inline-start" />
+              Write to us
             </a>
           </CardContent>
         </Card>
 
-        <Card className="h-full items-center text-center">
-          <CardHeader className="w-full justify-items-center">
-            <MapPin aria-hidden className="mb-2 size-6 text-muted-foreground" />
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <IconTile icon={MapPin} />
             <CardTitle className="text-lg">Sjedište</CardTitle>
             <CardDescription>Registered office</CardDescription>
           </CardHeader>
-          <CardContent>
-            <address className="not-italic">
-              {org.address.street}
-              <br />
-              {org.address.postalCode} {org.address.city}, {org.address.region}
-              <br />
-              {org.address.country}
-            </address>
+          <CardContent className="mt-auto space-y-4">
+            <div className="flex items-start justify-between gap-2">
+              <address className="text-base not-italic">
+                {org.address.street}
+                <br />
+                {org.address.postalCode} {org.address.city},{' '}
+                {org.address.region}
+                <br />
+                {org.address.country}
+              </address>
+              <CopyButton value={formattedAddress} label="address" />
+            </div>
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                buttonVariants({ variant: 'outline', size: 'lg' }),
+                'px-3',
+              )}
+            >
+              <ExternalLink aria-hidden data-icon="inline-start" />
+              Open in Maps
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
           </CardContent>
         </Card>
-      </div>
+      </section>
 
-      <p className="mt-10 text-sm text-muted-foreground">
-        {org.legalName} &middot; OIB{' '}
-        <span className="font-mono">{org.oib}</span> &middot; Registarski broj{' '}
-        <span className="font-mono">{org.registryNumber}</span>
-      </p>
+      <Separator className="my-16 max-w-xs" />
+
+      {/* Topic shortcuts */}
+      <section aria-labelledby="topics" className="w-full max-w-4xl">
+        <div className="text-center">
+          <h2
+            id="topics"
+            className="text-2xl font-semibold tracking-tight sm:text-3xl"
+          >
+            What&apos;s it about?
+          </h2>
+          <p className="mx-auto mt-2 max-w-xl text-balance text-sm text-muted-foreground sm:text-base">
+            Pick a topic and your email app opens with a ready-made subject and
+            outline, so your message reaches the right hands faster.
+          </p>
+        </div>
+
+        <ul className="mt-8 grid list-none gap-4 sm:grid-cols-2">
+          {topics.map((topic) => (
+            <li key={topic.title}>
+              <a
+                href={mailto(topic.subject, topic.body)}
+                className="group block h-full rounded-xl outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+              >
+                <Card className="h-full transition-all group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:ring-foreground/20">
+                  <CardHeader className="grid-cols-[auto_1fr_auto] items-start gap-x-4">
+                    <span
+                      aria-hidden
+                      className="row-span-2 flex size-10 items-center justify-center rounded-lg bg-muted ring-1 ring-foreground/10 transition-colors group-hover:bg-foreground group-hover:text-background"
+                    >
+                      <topic.icon className="size-5" />
+                    </span>
+                    <CardTitle className="text-base">{topic.title}</CardTitle>
+                    <ArrowUpRight
+                      aria-hidden
+                      className="size-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground"
+                    />
+                    <CardDescription className="col-start-2 col-span-2">
+                      {topic.description}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          No email app set up? Copy the address above and write to us from your
+          webmail.
+        </p>
+      </section>
+
+      <Separator className="my-16 max-w-xs" />
+
+      {/* Official details */}
+      <section aria-labelledby="details" className="w-full max-w-4xl">
+        <div className="text-center">
+          <h2
+            id="details"
+            className="text-2xl font-semibold tracking-tight sm:text-3xl"
+          >
+            Official details
+          </h2>
+          <p className="mx-auto mt-2 max-w-xl text-balance text-sm text-muted-foreground sm:text-base">
+            For invoices, donations and official correspondence.
+          </p>
+        </div>
+
+        {/* overflow-visible: CopyButton's error message drops below the last row. */}
+        <Card className="mx-auto mt-8 max-w-xl overflow-visible py-0">
+          <dl className="divide-y divide-border text-sm sm:text-base">
+            {officialDetails.map((item) => (
+              <div
+                key={item.label}
+                className="flex items-center justify-between gap-4 px-4 py-3"
+              >
+                <dt className="shrink-0 font-medium">{item.label}</dt>
+                <dd className="flex min-w-0 items-center gap-1 text-muted-foreground">
+                  <span
+                    className={cn(
+                      'text-right text-balance',
+                      item.mono && 'font-mono',
+                    )}
+                  >
+                    {item.value}
+                  </span>
+                  <CopyButton value={item.value} label={item.label} />
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </Card>
+      </section>
     </main>
   );
 }
