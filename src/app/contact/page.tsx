@@ -256,7 +256,8 @@ export default function Contact() {
           </p>
         </div>
 
-        <Card className="mx-auto mt-8 max-w-xl py-0">
+        {/* overflow-visible: CopyButton's error message drops below the last row. */}
+        <Card className="mx-auto mt-8 max-w-xl overflow-visible py-0">
           <dl className="divide-y divide-border text-sm sm:text-base">
             {officialDetails.map((item) => (
               <div
