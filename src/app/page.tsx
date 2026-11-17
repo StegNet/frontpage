@@ -136,7 +136,7 @@ export default function Home() {
           <dd>
             <a
               href={`mailto:${org.email}`}
-              className="text-muted-foreground hover:text-foreground hover:underline"
+              className="inline-block py-1 text-muted-foreground hover:text-foreground hover:underline"
             >
               {org.email}
             </a>
