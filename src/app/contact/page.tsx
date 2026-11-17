@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { CopyButton } from '@/components/copy-button';
+import { emailTemplates, mailto } from '@/lib/mailto';
 import { formattedAddress, org } from '@/lib/org';
 import { cn } from '@/lib/utils';
 
@@ -33,13 +34,6 @@ export const metadata: Metadata = {
     canonical: '/contact',
   },
 };
-
-/** Builds a mailto: link with a pre-filled subject and body. */
-function mailto(subject: string, body?: string) {
-  const params = [`subject=${encodeURIComponent(subject)}`];
-  if (body) params.push(`body=${encodeURIComponent(body)}`);
-  return `mailto:${org.email}?${params.join('&')}`;
-}
 
 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(formattedAddress)}`;
 
@@ -54,29 +48,25 @@ const topics: {
     title: 'Membership',
     description: 'Joining the association or questions about being a member.',
     icon: Users,
-    subject: 'Membership enquiry',
-    body: 'Hi StegNet,\n\nI would like to know more about membership.\n\nName:\nAbout me:\n\n',
+    ...emailTemplates.membership,
   },
   {
     title: 'Collaboration',
     description: 'Partnerships, joint projects, events or sponsorship.',
     icon: Handshake,
-    subject: 'Collaboration proposal',
-    body: 'Hi StegNet,\n\nI would like to propose a collaboration.\n\nOrganisation:\nIdea in brief:\n\n',
+    ...emailTemplates.collaboration,
   },
   {
     title: 'Security report',
     description: 'Responsibly disclose a vulnerability in one of our systems.',
     icon: ShieldCheck,
-    subject: 'Security report',
-    body: 'Hi StegNet,\n\nI would like to report a potential security issue.\n\nAffected URL / system:\nDescription:\nSteps to reproduce:\nImpact:\n\n',
+    ...emailTemplates.security,
   },
   {
     title: 'Official matters',
     description: 'Invoices, documents and administrative correspondence.',
     icon: FileText,
-    subject: 'Administrative enquiry',
-    body: 'Hi StegNet,\n\n',
+    ...emailTemplates.official,
   },
 ];
 
