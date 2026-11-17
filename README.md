@@ -21,6 +21,20 @@ bun dev
 
 Then open http://localhost:3000.
 
+### Line endings (Windows)
+
+`.gitattributes` keeps every file on LF. A clone made before it was added may
+still have CRLF files, which makes `bun run format:check` fail. Refresh it once:
+
+```bash
+git stash              # only if you have uncommitted changes
+git rm -r --cached -q .
+git reset --hard       # rewrites files with LF; discards uncommitted changes
+git stash pop          # only if you stashed
+```
+
+Or just make a fresh clone.
+
 ### Environment
 
 Local env lives in `.env.local` (gitignored). The site reads:
