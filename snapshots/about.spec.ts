@@ -162,6 +162,18 @@ test('animations are switched off for reduced motion', async ({ page }) => {
       .filter((name) => name !== 'none'),
   );
   expect(names).toEqual([]);
+  // Hovering a card must not move it.
+  const card = page
+    .getByRole('region', { name: "Who it's for" })
+    .locator('[data-slot="card"]')
+    .first();
+  await card.hover();
+  expect(
+    await card.evaluate((el) => [
+      getComputedStyle(el).translate,
+      getComputedStyle(el).transitionDuration,
+    ]),
+  ).toEqual(['none', '0s']);
   expect(
     await page.evaluate(
       () => getComputedStyle(document.documentElement).scrollBehavior,

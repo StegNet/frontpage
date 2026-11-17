@@ -322,7 +322,7 @@ export default function About() {
         <ol className="mt-6 grid list-none gap-4 md:grid-cols-3">
           {steps.map((step, i) => (
             <li key={step.title} className="reveal">
-              <Card className="group h-full transition-all hover:-translate-y-1 hover:shadow-md hover:ring-foreground/20 md:items-center md:text-center">
+              <Card className="group h-full hover:shadow-md hover:ring-foreground/20 motion-safe:transition-all motion-safe:hover:-translate-y-1 md:items-center md:text-center">
                 <CardHeader className="grid-cols-[auto_1fr] items-center gap-x-4 gap-y-1 md:w-full md:grid-cols-1 md:justify-items-center md:gap-2">
                   <IconTile
                     icon={step.icon}
@@ -365,7 +365,7 @@ export default function About() {
         <ul className="mt-8 grid list-none gap-4 sm:grid-cols-3">
           {audiences.map((audience) => (
             <li key={audience.title} className="reveal">
-              <Card className="group h-full transition-all hover:-translate-y-1 hover:shadow-md hover:ring-foreground/20">
+              <Card className="group h-full hover:shadow-md hover:ring-foreground/20 motion-safe:transition-all motion-safe:hover:-translate-y-1">
                 <CardHeader className="grid-cols-[auto_1fr] items-center gap-x-4 gap-y-1 sm:grid-cols-1 sm:items-start sm:gap-2">
                   <IconTile
                     icon={audience.icon}
@@ -399,7 +399,7 @@ export default function About() {
         <ul className="mt-8 grid list-none gap-4 sm:grid-cols-3">
           {leadership.map((person) => (
             <li key={person.name} className="reveal">
-              <Card className="h-full transition-all hover:-translate-y-1 hover:shadow-md hover:ring-foreground/20 sm:items-center sm:text-center">
+              <Card className="h-full hover:shadow-md hover:ring-foreground/20 motion-safe:transition-all motion-safe:hover:-translate-y-1 sm:items-center sm:text-center">
                 <CardHeader className="grid-cols-[auto_1fr] items-center gap-x-4 sm:w-full sm:grid-cols-1 sm:justify-items-center">
                   <Avatar
                     size="lg"
