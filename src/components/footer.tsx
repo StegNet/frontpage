@@ -9,12 +9,13 @@ const hasRealCommit = commit !== 'local';
 export function Footer() {
   return (
     <footer className="mt-auto border-t border-border px-6 py-8 text-center text-xs text-muted-foreground">
-      <nav aria-label="Footer" className="mb-4 flex justify-center gap-4">
+      <nav aria-label="Footer" className="mb-4 flex justify-center gap-2">
         {navLinks.map((link) => (
           <Link
             key={link.href}
             href={link.href}
-            className="hover:text-foreground hover:underline"
+            // min-h-6: at least 24px tall, an easy tap target on phones.
+            className="inline-flex min-h-6 items-center px-1 hover:text-foreground hover:underline"
           >
             {link.label}
           </Link>
