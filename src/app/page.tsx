@@ -83,7 +83,7 @@ export default function Home() {
             <li key={person.name}>
               <Card className="h-full items-center text-center">
                 <CardHeader className="w-full justify-items-center">
-                  <Avatar size="lg" className="mb-2 size-16">
+                  <Avatar className="mb-2 size-16">
                     <AvatarFallback className="text-lg font-medium">
                       {person.initials}
                     </AvatarFallback>

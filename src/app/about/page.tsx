@@ -401,10 +401,8 @@ export default function About() {
             <li key={person.name} className="reveal">
               <Card className="h-full hover:shadow-md hover:ring-foreground/20 motion-safe:transition-all motion-safe:hover:-translate-y-1 sm:items-center sm:text-center">
                 <CardHeader className="grid-cols-[auto_1fr] items-center gap-x-4 sm:w-full sm:grid-cols-1 sm:justify-items-center">
-                  <Avatar
-                    size="lg"
-                    className="row-span-2 size-14 ring-2 ring-amber-500/30 ring-offset-2 ring-offset-card sm:row-span-1 sm:mb-2 sm:size-16"
-                  >
+                  {/* No size="lg": its data-[size=lg]:size-10 would beat size-14/16. */}
+                  <Avatar className="row-span-2 size-14 ring-2 ring-amber-500/30 ring-offset-2 ring-offset-card sm:row-span-1 sm:mb-2 sm:size-16">
                     <AvatarFallback className="bg-gradient-to-br from-amber-500/15 to-fuchsia-500/15 text-lg font-medium text-foreground">
                       {person.initials}
                     </AvatarFallback>
