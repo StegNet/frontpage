@@ -128,3 +128,45 @@
     @apply font-sans;
   }
 }
+
+/* Motion. Everything below is skipped when the user asks for reduced motion,
+   and content stays fully visible in browsers without support. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Smooth in-page jumps. Page-to-page navigation stays instant thanks to
+     data-scroll-behavior="smooth" on <html> (see layout.tsx). */
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+}
+
+@keyframes glow-drift {
+  50% {
+    /* Composes with Tailwind's `translate` centring, which is a separate property. */
+    transform: translate(4%, -4%) scale(1.08) rotate(12deg);
+  }
+}
+
+/* Fade + slide in as the element scrolls into view. Pure CSS, no JS. */
+@utility reveal {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: reveal-up ease-out both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+  }
+}
+
+/* Slow drift for the decorative background glow. */
+@utility animate-glow {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: glow-drift 18s ease-in-out infinite;
+  }
+}
