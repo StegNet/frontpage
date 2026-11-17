@@ -20,6 +20,28 @@ export const org = {
   },
 } as const;
 
+// People authorised to represent the association.
+export const leadership = [
+  {
+    name: 'Max Lucas Gobo',
+    initials: 'MG',
+    roles: ['President', 'Information Security Lead'],
+    title: 'Predsjednik udruge',
+  },
+  {
+    name: 'Noa Hrvat',
+    initials: 'NH',
+    roles: ['Vice President'],
+    title: 'Podpredsjednik udruge',
+  },
+  {
+    name: 'Adrian Franković',
+    initials: 'AF',
+    roles: ['Secretary'],
+    title: 'Tajnik udruge',
+  },
+] as const;
+
 export const formattedAddress = `${org.address.street}, ${org.address.postalCode} ${org.address.city}, ${org.address.region}, ${org.address.country}`;
 
 export const navLinks = [

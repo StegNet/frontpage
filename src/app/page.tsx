@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { useLogger } from '@/lib/logger-context';
-import { formattedAddress, org } from '@/lib/org';
+import { formattedAddress, leadership, org } from '@/lib/org';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -16,27 +16,6 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-
-const leadership = [
-  {
-    name: 'Max Lucas Gobo',
-    initials: 'MG',
-    roles: ['President', 'Information Security Lead'],
-    title: 'Predsjednik udruge',
-  },
-  {
-    name: 'Noa Hrvat',
-    initials: 'NH',
-    roles: ['Vice President'],
-    title: 'Podpredsjednik udruge',
-  },
-  {
-    name: 'Adrian Franković',
-    initials: 'AF',
-    roles: ['Secretary'],
-    title: 'Tajnik udruge',
-  },
-];
 
 export default function Home() {
   const logger = useLogger();
