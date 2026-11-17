@@ -49,6 +49,8 @@ const membershipLink = mailto(
 const enter =
   'motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:fill-mode-both';
 
+// Jump links target the <section>s, not their headings: sections carry
+// scroll-mt-24 (room for the fixed nav) and aren't shifted by `reveal`.
 const sections = [
   { id: 'mission', label: 'Mission' },
   { id: 'audience', label: "Who it's for" },
@@ -293,11 +295,12 @@ export default function About() {
 
       {/* Mission */}
       <section
-        aria-labelledby="mission"
+        id="mission"
+        aria-labelledby="mission-title"
         className="mt-16 w-full max-w-4xl scroll-mt-24 sm:mt-24"
       >
         <SectionHeading
-          id="mission"
+          id="mission-title"
           eyebrow="Why we exist"
           title="Our mission"
         />
@@ -346,11 +349,12 @@ export default function About() {
 
       {/* Audience */}
       <section
-        aria-labelledby="audience"
+        id="audience"
+        aria-labelledby="audience-title"
         className="mt-16 w-full max-w-4xl scroll-mt-24 sm:mt-24"
       >
         <SectionHeading
-          id="audience"
+          id="audience-title"
           eyebrow="Our community"
           title="Who it's for"
         >
@@ -380,10 +384,15 @@ export default function About() {
 
       {/* Leadership */}
       <section
-        aria-labelledby="leadership"
+        id="leadership"
+        aria-labelledby="leadership-title"
         className="mt-16 w-full max-w-4xl scroll-mt-24 sm:mt-24"
       >
-        <SectionHeading id="leadership" eyebrow="Our people" title="Leadership">
+        <SectionHeading
+          id="leadership-title"
+          eyebrow="Our people"
+          title="Leadership"
+        >
           The people authorised to represent the association.
         </SectionHeading>
 
@@ -422,11 +431,12 @@ export default function About() {
 
       {/* Official details */}
       <section
-        aria-labelledby="details"
+        id="details"
+        aria-labelledby="details-title"
         className="mt-16 w-full max-w-4xl scroll-mt-24 sm:mt-24"
       >
         <SectionHeading
-          id="details"
+          id="details-title"
           eyebrow="Registration"
           title="Official details"
         >

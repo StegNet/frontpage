@@ -28,19 +28,30 @@ test('"On this page" links jump to their section below the fixed nav', async ({
   const siteNav = page.getByRole('navigation', { name: 'Main' });
   for (const link of await links.all()) {
     const id = (await link.getAttribute('href'))!.replace('#', '');
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
     await link.click();
-    const heading = page.locator(`#${id}`);
-    await expect(heading).toBeInViewport();
-    // The heading must not end up hidden behind the fixed site nav.
+    // Wait for the smooth scroll to finish before measuring, so a heading
+    // passing by mid-scroll can't make the check pass early.
+    let last = -1;
     await expect
       .poll(async () => {
-        const [h, n] = await Promise.all([
-          heading.boundingBox(),
-          siteNav.boundingBox(),
-        ]);
-        return h!.y >= n!.y + n!.height;
+        const y = await page.evaluate(() => window.scrollY);
+        const settled = y > 0 && y === last;
+        last = y;
+        return settled;
       })
       .toBe(true);
+    const section = page.locator(`#${id}`);
+    const heading = section.getByRole('heading', { level: 2 });
+    await expect(heading).toBeInViewport();
+    // The heading must not end up hidden behind the fixed site nav.
+    const [h, n] = await Promise.all([
+      heading.boundingBox(),
+      siteNav.boundingBox(),
+    ]);
+    expect(h!.y, `#${id} heading below the nav`).toBeGreaterThanOrEqual(
+      n!.y + n!.height,
+    );
   }
 });
 
