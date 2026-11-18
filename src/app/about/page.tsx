@@ -27,6 +27,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { CopyButton } from '@/components/copy-button';
+import { RevealOnScroll } from '@/components/reveal-on-scroll';
 import { emailTemplates, mailto } from '@/lib/mailto';
 import { formattedAddress, leadership, org } from '@/lib/org';
 import { cn } from '@/lib/utils';
@@ -179,9 +180,9 @@ function SectionHeading({
 export default function About() {
   return (
     // overflow-x-clip (not overflow-hidden): stops the glow causing sideways
-    // scroll without making <main> a scroll container, which would break the
-    // scroll-driven `reveal` animations.
+    // scroll without making <main> a scroll container.
     <main className="relative flex flex-1 flex-col items-center overflow-x-clip px-4 py-24 sm:px-6">
+      <RevealOnScroll />
       <div
         aria-hidden
         className="animate-glow pointer-events-none absolute top-72 left-1/2 -z-10 size-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-tr from-amber-500/20 via-fuchsia-500/10 to-transparent blur-3xl sm:top-[22rem] sm:size-[40rem]"
@@ -321,7 +322,11 @@ export default function About() {
         </h3>
         <ol className="mt-6 grid list-none gap-4 md:grid-cols-3">
           {steps.map((step, i) => (
-            <li key={step.title} className="reveal">
+            <li
+              key={step.title}
+              className="reveal"
+              style={{ animationDelay: `${i * 100}ms` }}
+            >
               <Card className="group h-full hover:shadow-md hover:ring-foreground/20 motion-safe:transition-all motion-safe:hover:-translate-y-1 md:items-center md:text-center">
                 <CardHeader className="grid-cols-[auto_1fr] items-center gap-x-4 gap-y-1 md:w-full md:grid-cols-1 md:justify-items-center md:gap-2">
                   <IconTile
@@ -363,8 +368,12 @@ export default function About() {
         </SectionHeading>
 
         <ul className="mt-8 grid list-none gap-4 sm:grid-cols-3">
-          {audiences.map((audience) => (
-            <li key={audience.title} className="reveal">
+          {audiences.map((audience, i) => (
+            <li
+              key={audience.title}
+              className="reveal"
+              style={{ animationDelay: `${i * 100}ms` }}
+            >
               <Card className="group h-full hover:shadow-md hover:ring-foreground/20 motion-safe:transition-all motion-safe:hover:-translate-y-1">
                 <CardHeader className="grid-cols-[auto_1fr] items-center gap-x-4 gap-y-1 sm:grid-cols-1 sm:items-start sm:gap-2">
                   <IconTile
@@ -397,8 +406,12 @@ export default function About() {
         </SectionHeading>
 
         <ul className="mt-8 grid list-none gap-4 sm:grid-cols-3">
-          {leadership.map((person) => (
-            <li key={person.name} className="reveal">
+          {leadership.map((person, i) => (
+            <li
+              key={person.name}
+              className="reveal"
+              style={{ animationDelay: `${i * 100}ms` }}
+            >
               <Card className="h-full hover:shadow-md hover:ring-foreground/20 motion-safe:transition-all motion-safe:hover:-translate-y-1 sm:items-center sm:text-center">
                 <CardHeader className="grid-cols-[auto_1fr] items-center gap-x-4 sm:w-full sm:grid-cols-1 sm:justify-items-center">
                   {/* No size="lg": its data-[size=lg]:size-10 would beat size-14/16. */}
