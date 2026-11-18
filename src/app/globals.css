@@ -153,13 +153,15 @@
   }
 }
 
-/* Fade + slide in as the element scrolls into view. Pure CSS, no JS. */
+/* Fade + rise once the element scrolls into view, matching the hero entrance.
+   <RevealOnScroll> sets data-revealed. Without JS, content just shows. */
 @utility reveal {
-  @media (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      animation: reveal-up ease-out both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 80%;
+  @media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+    &:not([data-revealed]) {
+      opacity: 0;
+    }
+    &[data-revealed] {
+      animation: reveal-up 700ms ease-out both;
     }
   }
 }

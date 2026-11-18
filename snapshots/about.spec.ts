@@ -162,7 +162,7 @@ test('sections fade in as they scroll into view', async ({ page }) => {
     name: 'Curious about technology? Join us.',
   });
   const opacity = () => cta.evaluate((el) => getComputedStyle(el).opacity);
-  // Hidden while below the fold (fails if <main> becomes a scroll container).
+  // Hidden while below the fold, shown once scrolled into view.
   expect(await opacity()).toBe('0');
   await cta.scrollIntoViewIfNeeded();
   await expect.poll(opacity).toBe('1');

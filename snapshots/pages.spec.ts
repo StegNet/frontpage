@@ -39,7 +39,8 @@ for (const { slug, route } of pages) {
   for (const theme of themes) {
     test(`${slug} (${theme})`, async ({ page }, testInfo) => {
       // Theme defaults to "system", so emulating the color scheme is enough.
-      await page.emulateMedia({ colorScheme: theme });
+      // Reduced motion: scroll-in sections would otherwise still be hidden.
+      await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' });
       await page.goto(route, { waitUntil: 'networkidle' });
       await page.evaluate(() => document.fonts.ready);
 
