@@ -30,6 +30,7 @@ import { CopyButton } from '@/components/copy-button';
 import { RevealOnScroll } from '@/components/reveal-on-scroll';
 import { emailTemplates, mailto } from '@/lib/mailto';
 import { formattedAddress, leadership, org } from '@/lib/org';
+import { enter } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
@@ -45,10 +46,6 @@ const membershipLink = mailto(
   emailTemplates.membership.subject,
   emailTemplates.membership.body,
 );
-
-// Hero entrance: fade + rise, staggered with `delay-*`. Off for reduced motion.
-const enter =
-  'motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:fill-mode-both';
 
 // Jump links target the <section>s, not their headings: sections carry
 // scroll-mt-24 (room for the fixed nav) and aren't shifted by `reveal`.
