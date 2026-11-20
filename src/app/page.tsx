@@ -78,7 +78,7 @@ export default function Home() {
           The people authorised to represent the association.
         </p>
 
-        <ul className="mt-8 grid list-none gap-4 sm:grid-cols-3">
+        <ul className="mt-8 grid list-none gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {leadership.map((person) => (
             <li key={person.name}>
               <Card className="h-full items-center text-center">
