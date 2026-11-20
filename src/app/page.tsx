@@ -1,147 +1,504 @@
-'use client';
-
-import { useEffect } from 'react';
 import Link from 'next/link';
-import { useLogger } from '@/lib/logger-context';
-import { formattedAddress, leadership, org } from '@/lib/org';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import type { ReactNode } from 'react';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+  ArrowRight,
+  BadgeCheck,
+  Briefcase,
+  GraduationCap,
+  Lightbulb,
+  BookOpen,
+  Hammer,
+  Handshake,
+  Mail,
+  MapPin,
+  Share2,
+  ShieldCheck,
+  Users,
+  type LucideIcon,
+} from 'lucide-react';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
+import {
+  AudienceBubbles,
+  LocationPin,
+  ShareNetwork,
+  TopicMarquee,
+} from '@/components/home-visuals';
+import { LogPageView } from '@/components/log-page-view';
+import { RevealOnScroll } from '@/components/reveal-on-scroll';
+import { emailTemplates, mailto } from '@/lib/mailto';
+import { leadership, org } from '@/lib/org';
+import { enter } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 
-export default function Home() {
-  const logger = useLogger();
+const membershipLink = mailto(
+  emailTemplates.membership.subject,
+  emailTemplates.membership.body,
+);
 
-  useEffect(() => {
-    logger.info('Rendering home page...', { platform: navigator.userAgent });
-  }, [logger]);
+// Topics straight from the association's mission.
+const topics = [
+  'IT',
+  'Computing',
+  'Digital technologies',
+  'Innovation',
+  'Entrepreneurship',
+];
 
+// Second marquee row: how we work and who it's for, as on the about page.
+const practices = [
+  'Learn',
+  'Build',
+  'Share',
+  'Students',
+  'Hobbyists',
+  'Professionals',
+];
+
+const audiences = [
+  { label: 'Students', icon: GraduationCap },
+  { label: 'Hobbyists', icon: Lightbulb },
+  { label: 'Professionals', icon: Briefcase },
+];
+
+const ways: {
+  icon: LucideIcon;
+  title: string;
+  text: string;
+  href: string;
+}[] = [
+  {
+    icon: Users,
+    title: 'Become a member',
+    text: 'Join the association and learn, build and share alongside others.',
+    href: membershipLink,
+  },
+  {
+    icon: Handshake,
+    title: 'Propose a collaboration',
+    text: 'Have an idea for a project, event or partnership? Tell us about it.',
+    href: mailto(
+      emailTemplates.collaboration.subject,
+      emailTemplates.collaboration.body,
+    ),
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Report a security issue',
+    text: 'Found something wrong on our systems? Let us know privately.',
+    href: mailto(emailTemplates.security.subject, emailTemplates.security.body),
+  },
+];
+
+function Tile({
+  icon: Icon,
+  title,
+  children,
+  visual,
+  className,
+  delay,
+}: {
+  icon: LucideIcon;
+  title: string;
+  children: ReactNode;
+  visual?: ReactNode;
+  className?: string;
+  delay: number;
+}) {
   return (
-    <main className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-6 py-24 text-center">
-      {/* Soft background accent — decorative only. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/3 -z-10 h-[40rem] w-[40rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-tr from-amber-500/20 via-fuchsia-500/10 to-transparent blur-3xl"
-      />
-
-      <Badge variant="outline" className="mb-6 text-muted-foreground">
-        Welcome to StegNet
-      </Badge>
-
-      <h1 className="max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-6xl">
-        Udruga za digitalne tehnologije StegNet
-      </h1>
-
-      <p className="mt-4 text-balance text-base font-medium text-muted-foreground sm:text-lg">
-        StegNet Digital Technologies Association
-      </p>
-
-      <p className="mt-6 max-w-xl text-balance text-base text-muted-foreground sm:text-lg">
-        A non-profit association from Croatia, promoting IT, computing and
-        digital technologies as well as fostering a culture of innovation and
-        entrepreneurship.
-      </p>
-
-      <div className="mt-8 flex flex-wrap justify-center gap-3">
-        <Link
-          href="/about"
-          className={cn(buttonVariants({ variant: 'default', size: 'lg' }))}
-        >
-          About the association
-        </Link>
-        <Link
-          href="/contact"
-          className={cn(buttonVariants({ variant: 'outline', size: 'lg' }))}
-        >
-          Contact us
-        </Link>
+    <li
+      className={cn(
+        'reveal group relative flex flex-col overflow-hidden rounded-2xl bg-card p-6 ring-1 ring-foreground/10 transition-shadow hover:shadow-md hover:ring-foreground/20',
+        className,
+      )}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      {visual && (
+        <div className="mb-6 flex flex-1 flex-col justify-center">{visual}</div>
+      )}
+      <div className="mt-auto">
+        <div className="flex items-center gap-2">
+          <Icon aria-hidden className="size-4 text-muted-foreground" />
+          <h3 className="font-semibold tracking-tight">{title}</h3>
+        </div>
+        <p className="mt-1.5 text-sm text-balance text-muted-foreground">
+          {children}
+        </p>
       </div>
+    </li>
+  );
+}
 
-      <Separator className="my-16 max-w-xs" />
+function SectionHeading({
+  id,
+  eyebrow,
+  title,
+  children,
+}: {
+  id: string;
+  eyebrow: string;
+  title: string;
+  children?: ReactNode;
+}) {
+  return (
+    <div className="reveal text-center">
+      <p className="text-xs font-medium tracking-widest text-muted-foreground uppercase">
+        {eyebrow}
+      </p>
+      <h2
+        id={id}
+        className="mt-2 text-2xl font-semibold tracking-tight text-balance sm:text-3xl"
+      >
+        {title}
+      </h2>
+      {children && (
+        <p className="mx-auto mt-2 max-w-xl text-sm text-balance text-muted-foreground sm:text-base">
+          {children}
+        </p>
+      )}
+    </div>
+  );
+}
 
-      <section aria-labelledby="leadership" className="w-full max-w-4xl">
-        <h2
-          id="leadership"
-          className="text-2xl font-semibold tracking-tight sm:text-3xl"
+export default function Home() {
+  return (
+    // overflow-x-clip: the glow can't cause sideways scroll.
+    <main className="relative flex flex-1 flex-col items-center overflow-x-clip px-4 pb-24 sm:px-6">
+      <LogPageView message="Rendering home page..." />
+      <RevealOnScroll />
+
+      {/* Hero */}
+      <section
+        aria-labelledby="hero-title"
+        className="relative flex min-h-[calc(100svh-4rem)] w-full flex-col items-center justify-center py-24 text-center"
+      >
+        {/* Decorative grid, faded out towards the edges. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)]"
+        />
+        <div
+          aria-hidden
+          className="animate-glow pointer-events-none absolute top-1/2 left-1/2 -z-10 size-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-tr from-amber-500/20 via-fuchsia-500/10 to-transparent blur-3xl sm:size-[44rem]"
+        />
+
+        <Badge
+          variant="outline"
+          className={cn(
+            'mb-6 gap-2 bg-background/60 text-muted-foreground backdrop-blur',
+            enter,
+          )}
         >
-          Leadership
-        </h2>
-        <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-          The people authorised to represent the association.
+          <span aria-hidden className="size-1.5 rounded-full bg-amber-500" />
+          Non-profit &middot; {org.address.city}, Istria
+        </Badge>
+
+        <h1
+          id="hero-title"
+          className={cn(
+            'max-w-4xl text-4xl font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl',
+            enter,
+            'motion-safe:delay-75',
+          )}
+        >
+          Learn, build and share technology{' '}
+          <span className="bg-gradient-to-r from-amber-500 to-fuchsia-500 bg-clip-text text-transparent">
+            together
+          </span>
+        </h1>
+
+        <p
+          className={cn(
+            'mt-6 max-w-2xl text-base text-balance text-muted-foreground sm:text-lg',
+            enter,
+            'motion-safe:delay-150',
+          )}
+        >
+          {org.name} is a volunteer-run association promoting IT, computing and
+          digital technologies, and growing a culture of innovation and
+          entrepreneurship in our community.
         </p>
 
-        <ul className="mt-8 grid list-none gap-4 sm:grid-cols-3">
-          {leadership.map((person) => (
-            <li key={person.name}>
-              <Card className="h-full items-center text-center">
-                <CardHeader className="w-full justify-items-center">
-                  <Avatar className="mb-2 size-16">
-                    <AvatarFallback className="text-lg font-medium">
-                      {person.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <CardTitle className="text-lg">{person.name}</CardTitle>
-                  <CardDescription>{person.title}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-wrap justify-center gap-2">
-                  {person.roles.map((role) => (
-                    <Badge key={role} variant="secondary">
-                      {role}
-                    </Badge>
-                  ))}
-                </CardContent>
-              </Card>
+        <div
+          className={cn(
+            'mt-8 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row',
+            enter,
+            'motion-safe:delay-200',
+          )}
+        >
+          <a
+            href={membershipLink}
+            className={cn(buttonVariants({ size: 'lg' }), 'px-4')}
+          >
+            <Mail aria-hidden data-icon="inline-start" />
+            Become a member
+          </a>
+          <Link
+            href="/about"
+            className={cn(
+              buttonVariants({ variant: 'outline', size: 'lg' }),
+              'bg-background/60 px-4 backdrop-blur',
+            )}
+          >
+            About the association
+            <ArrowRight aria-hidden data-icon="inline-end" />
+          </Link>
+        </div>
+
+        <p
+          className={cn(
+            'mt-10 text-xs text-balance text-muted-foreground sm:text-sm',
+            enter,
+            'motion-safe:delay-300',
+          )}
+        >
+          {org.legalName} &middot; {org.alternateName}
+        </p>
+      </section>
+
+      {/* What we do */}
+      <section aria-labelledby="what-title" className="w-full max-w-5xl">
+        <SectionHeading
+          id="what-title"
+          eyebrow="What we do"
+          title="A place to grow with technology"
+        >
+          We bring together people who are curious about technology.
+        </SectionHeading>
+
+        <ul className="mt-10 grid list-none gap-4 md:grid-cols-6">
+          <Tile
+            icon={BookOpen}
+            title="Learn together"
+            className="md:col-span-4"
+            delay={0}
+            visual={<TopicMarquee rows={[topics, practices]} />}
+          >
+            Explore IT, computing and digital technologies with people who share
+            your curiosity.
+          </Tile>
+
+          <Tile
+            icon={Hammer}
+            title="Build real projects"
+            className="md:col-span-2"
+            delay={100}
+            visual={
+              <div
+                aria-hidden
+                className="rounded-lg bg-zinc-950 p-3 font-mono text-xs leading-relaxed text-zinc-300 ring-1 ring-white/10"
+              >
+                <p>
+                  <span className="text-amber-400">$</span> git init idea
+                </p>
+                <p>
+                  <span className="text-amber-400">$</span> build &amp;&amp;
+                  share
+                </p>
+                <p className="text-emerald-400">✓ done, together</p>
+              </div>
+            }
+          >
+            Turn ideas into working projects and grow an entrepreneurial
+            mindset.
+          </Tile>
+
+          <Tile
+            icon={Share2}
+            title="Share what you know"
+            className="md:col-span-2"
+            delay={0}
+            visual={<ShareNetwork />}
+          >
+            Pass your knowledge on, so the whole community grows with it.
+          </Tile>
+
+          <Tile
+            icon={Users}
+            title="Open to everyone"
+            className="md:col-span-2"
+            delay={100}
+            visual={<AudienceBubbles items={audiences} />}
+          >
+            Whether you are just starting out or have years of experience.
+          </Tile>
+
+          <Tile
+            icon={MapPin}
+            title="Rooted in Istria"
+            className="md:col-span-2"
+            delay={200}
+            visual={
+              <LocationPin
+                label={`${org.address.city} · ${org.address.region} · ${org.address.countryCode}`}
+              />
+            }
+          >
+            Registered in {org.address.city}, {org.address.country}, and run by
+            volunteers from the community.
+          </Tile>
+        </ul>
+      </section>
+
+      {/* Get involved */}
+      <section
+        aria-labelledby="involved-title"
+        className="mt-20 w-full max-w-5xl sm:mt-28"
+      >
+        <SectionHeading
+          id="involved-title"
+          eyebrow="Get involved"
+          title="Three ways to start"
+        >
+          Each one opens a ready-made email, so you only fill in the details.
+        </SectionHeading>
+
+        <ul className="mt-10 grid list-none gap-4 md:grid-cols-3">
+          {ways.map((way, i) => (
+            <li
+              key={way.title}
+              className="reveal"
+              style={{ animationDelay: `${i * 100}ms` }}
+            >
+              <a
+                href={way.href}
+                className="group flex h-full flex-col rounded-2xl bg-card p-6 ring-1 ring-foreground/10 outline-none hover:shadow-md hover:ring-foreground/20 focus-visible:ring-3 focus-visible:ring-ring/50 motion-safe:transition-all motion-safe:hover:-translate-y-1"
+              >
+                <span
+                  aria-hidden
+                  className="flex size-10 items-center justify-center rounded-lg bg-muted ring-1 ring-foreground/10 transition-colors group-hover:bg-foreground group-hover:text-background"
+                >
+                  <way.icon className="size-5" />
+                </span>
+                <span className="mt-4 font-semibold tracking-tight">
+                  {way.title}
+                </span>
+                <span className="mt-1.5 text-sm text-muted-foreground">
+                  {way.text}
+                </span>
+                <span className="mt-4 inline-flex items-center gap-1 pt-1 text-sm font-medium">
+                  Write to us
+                  <ArrowRight
+                    aria-hidden
+                    className="size-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5"
+                  />
+                </span>
+              </a>
             </li>
           ))}
         </ul>
       </section>
 
-      <Separator className="my-16 max-w-xs" />
+      {/* People and registration */}
+      <section
+        aria-label="Who runs StegNet"
+        className="mt-20 grid w-full max-w-5xl gap-4 sm:mt-28 md:grid-cols-2"
+      >
+        <div className="reveal flex flex-col rounded-2xl bg-card p-6 ring-1 ring-foreground/10">
+          <h2 className="font-semibold tracking-tight">Run by volunteers</h2>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            The association is led by people who give their own time to it.
+          </p>
+          <ul className="mt-5 flex list-none flex-col gap-3">
+            {leadership.map((person) => (
+              <li key={person.name} className="flex items-center gap-3">
+                <Avatar className="size-10 ring-2 ring-amber-500/30 ring-offset-2 ring-offset-card">
+                  <AvatarFallback className="bg-gradient-to-br from-amber-500/15 to-fuchsia-500/15 text-sm font-medium text-foreground">
+                    {person.initials}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">{person.name}</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {person.roles.join(' · ')}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <Link
+            href="/about#leadership"
+            className="mt-6 inline-flex items-center gap-1 self-start py-1 text-sm font-medium underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
+          >
+            Meet the leadership
+            <ArrowRight aria-hidden className="size-4" />
+          </Link>
+        </div>
 
-      <section aria-labelledby="details" className="w-full max-w-4xl">
-        <h2
-          id="details"
-          className="text-2xl font-semibold tracking-tight sm:text-3xl"
+        <div
+          className="reveal flex flex-col rounded-2xl bg-card p-6 ring-1 ring-foreground/10"
+          style={{ animationDelay: '100ms' }}
         >
-          Association details
-        </h2>
-        <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-          Official registration and contact information.
-        </p>
+          <h2 className="flex items-center gap-2 font-semibold tracking-tight">
+            <BadgeCheck aria-hidden className="size-4 text-amber-500" />
+            Officially registered
+          </h2>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            Listed in the Croatian Register of Associations.
+          </p>
+          <dl className="mt-5 grid grid-cols-[max-content_1fr] gap-x-6 gap-y-3 text-sm">
+            <dt className="text-muted-foreground">OIB</dt>
+            <dd className="font-mono">{org.oib}</dd>
+            <dt className="text-muted-foreground">Registarski broj</dt>
+            <dd className="font-mono">{org.registryNumber}</dd>
+            <dt className="text-muted-foreground">Sjedište</dt>
+            <dd>
+              {org.address.city}, {org.address.region}
+            </dd>
+          </dl>
+          <Link
+            href="/about#details"
+            className="mt-auto inline-flex items-center gap-1 self-start pt-6 pb-1 text-sm font-medium underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
+          >
+            All official details
+            <ArrowRight aria-hidden className="size-4" />
+          </Link>
+        </div>
+      </section>
 
-        <dl className="mx-auto mt-8 grid max-w-xl gap-x-8 gap-y-3 text-left text-sm sm:grid-cols-[max-content_1fr] sm:text-base">
-          <dt className="font-medium">Legal name</dt>
-          <dd className="text-muted-foreground">{org.legalName}</dd>
-
-          <dt className="font-medium">OIB</dt>
-          <dd className="font-mono text-muted-foreground">{org.oib}</dd>
-
-          <dt className="font-medium">Registarski broj</dt>
-          <dd className="font-mono text-muted-foreground">
-            {org.registryNumber}
-          </dd>
-
-          <dt className="font-medium">Sjedište</dt>
-          <dd className="text-muted-foreground">{formattedAddress}</dd>
-
-          <dt className="font-medium">Email</dt>
-          <dd>
+      {/* Closing call to action */}
+      <section
+        aria-labelledby="cta-title"
+        className="reveal relative mt-20 w-full max-w-5xl overflow-hidden rounded-2xl bg-zinc-950 px-6 py-14 text-center text-white ring-1 ring-white/10 sm:mt-28 sm:px-12"
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 left-1/2 size-80 -translate-x-1/2 rounded-full bg-gradient-to-tr from-amber-500/30 via-fuchsia-500/20 to-transparent blur-3xl"
+        />
+        <div className="relative">
+          <h2
+            id="cta-title"
+            className="text-2xl font-semibold tracking-tight text-balance sm:text-4xl"
+          >
+            Curious about technology? Come build with us.
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-balance text-zinc-400 sm:text-base">
+            Membership questions, ideas or just a hello. We read every message.
+          </p>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <a
-              href={`mailto:${org.email}`}
-              className="inline-block py-1 text-muted-foreground hover:text-foreground hover:underline"
+              href={membershipLink}
+              className={cn(
+                buttonVariants({ size: 'lg' }),
+                'bg-white px-4 text-zinc-950 hover:bg-zinc-200',
+              )}
             >
-              {org.email}
+              <Mail aria-hidden data-icon="inline-start" />
+              Become a member
             </a>
-          </dd>
-        </dl>
+            <Link
+              href="/contact"
+              className={cn(
+                buttonVariants({ variant: 'outline', size: 'lg' }),
+                'border-white/20 bg-transparent px-4 text-white hover:bg-white/10 hover:text-white',
+              )}
+            >
+              All contact options
+              <ArrowRight aria-hidden data-icon="inline-end" />
+            </Link>
+          </div>
+        </div>
       </section>
     </main>
   );

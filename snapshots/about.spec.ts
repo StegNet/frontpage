@@ -92,8 +92,8 @@ test('leadership avatars use their intended size', async ({ page }) => {
   for (const route of ['/about', '/']) {
     await page.goto(route);
     const width = page.viewportSize()!.width;
-    // About: 56px on phones, 64px from `sm` (640px). Home: always 64px.
-    const expected = route === '/about' && width < 640 ? 56 : 64;
+    // About: 56px on phones, 64px from `sm` (640px). Home: always 40px.
+    const expected = route === '/' ? 40 : width < 640 ? 56 : 64;
     const box = await page
       .locator('[data-slot="avatar"]')
       .first()
