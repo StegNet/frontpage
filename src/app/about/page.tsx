@@ -405,7 +405,7 @@ export default function About() {
           The people authorised to represent the association.
         </SectionHeading>
 
-        <ul className="mt-8 grid list-none gap-4 sm:grid-cols-3">
+        <ul className="mt-8 grid list-none gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {leadership.map((person, i) => (
             <li
               key={person.name}
