@@ -40,6 +40,12 @@ export const leadership = [
     roles: ['Secretary'],
     title: 'Tajnik udruge',
   },
+  {
+    name: 'Tonka Baša',
+    initials: 'TB',
+    roles: ['PR Manager'],
+    title: 'Voditeljica odnosa s javnošću',
+  },
 ] as const;
 
 export const formattedAddress = `${org.address.street}, ${org.address.postalCode} ${org.address.city}, ${org.address.region}, ${org.address.country}`;
