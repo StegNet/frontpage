@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { emailTemplates } from '../src/lib/mailto';
-import { formattedAddress, leadership, org } from '../src/lib/org';
+import { formattedAddress, leadership, org, team } from '../src/lib/org';
 
 test('page has a clear outline of headings', async ({ page }) => {
   await page.goto('/about');
@@ -12,6 +12,7 @@ test('page has a clear outline of headings', async ({ page }) => {
     'Our mission',
     "Who it's for",
     'Leadership',
+    'Team',
     'Official details',
   ]) {
     await expect(main.getByRole('heading', { level: 2, name })).toBeVisible();
@@ -24,7 +25,7 @@ test('"On this page" links jump to their section below the fixed nav', async ({
   await page.goto('/about');
   const nav = page.getByRole('navigation', { name: 'On this page' });
   const links = nav.getByRole('link');
-  await expect(links).toHaveCount(4);
+  await expect(links).toHaveCount(5);
   const siteNav = page.getByRole('navigation', { name: 'Main' });
   for (const link of await links.all()) {
     const id = (await link.getAttribute('href'))!.replace('#', '');
@@ -78,13 +79,42 @@ test('"Become a member" opens a pre-filled membership email', async ({
   }
 });
 
-test('leadership lists every representative', async ({ page }) => {
-  await page.goto('/about');
-  const section = page.getByRole('region', { name: 'Leadership' });
-  for (const person of leadership) {
-    const card = section.getByRole('listitem').filter({ hasText: person.name });
-    await expect(card).toContainText(person.title);
-    for (const role of person.roles) await expect(card).toContainText(role);
+for (const [name, people] of [
+  ['Leadership', leadership],
+  ['Team', team],
+] as const) {
+  test(`${name} lists exactly its people`, async ({ page }) => {
+    // Home and About both keep representatives and the wider team apart.
+    for (const route of ['/', '/about']) {
+      await page.goto(route);
+      const items = page.getByRole('region', { name }).getByRole('listitem');
+      await expect(items, route).toHaveCount(people.length);
+      for (const person of people) {
+        const card = items.filter({ hasText: person.name });
+        await expect(card).toContainText(person.title);
+        for (const role of person.roles) await expect(card).toContainText(role);
+      }
+    }
+  });
+}
+
+test('roles wrap between roles, not inside one', async ({ page }) => {
+  // From 360px every role fits on a line of its own. Below that a long role
+  // may still break rather than be clipped, so 320px is left out on purpose.
+  for (const width of [360, 412, 800, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const route of ['/', '/about']) {
+      await page.goto(route);
+      const broken = await page.evaluate(() =>
+        [...document.querySelectorAll('main li p.flex-wrap > span')]
+          .filter((span) => {
+            const line = parseFloat(getComputedStyle(span).lineHeight);
+            return span.getBoundingClientRect().height > line * 1.5;
+          })
+          .map((span) => span.textContent),
+      );
+      expect(broken, `${route} at ${width}px`).toEqual([]);
+    }
   }
 });
 

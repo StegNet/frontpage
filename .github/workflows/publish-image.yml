@@ -76,10 +76,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # Tell Portainer to pull the freshly-pushed image tag and redeploy.
+  # Record the release as a production deploy in Sentry.
   request-update:
     needs: publish
     runs-on: blacksmith-2vcpu-ubuntu-2404
+    # No step here uses GITHUB_TOKEN, so grant it nothing.
+    permissions: {}
     timeout-minutes: 5
     environment:
       name: production
@@ -88,11 +90,6 @@ jobs:
     env:
       DEPLOY_ENV: production
     steps:
-      - name: Trigger Portainer redeploy webhook
-        uses: newarifrh/portainer-service-webhook@v1
-        with:
-          webhook_url: "${{ secrets.PORTAINER_WEBHOOK }}?${{ vars.PORTAINER_DEPLOY_TAG || 'tag' }}=${{ needs.publish.outputs.version }}"
-
       - name: Record Sentry deploy
         run: npx @sentry/cli deploys new -e "$DEPLOY_ENV"
         env:

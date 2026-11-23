@@ -42,6 +42,22 @@ export const leadership = [
   },
 ] as const;
 
+// People who help run the association but don't represent it.
+export const team = [
+  {
+    name: 'Tonka Baša',
+    initials: 'TB',
+    roles: ['PR Manager'],
+    title: 'Voditeljica odnosa s javnošću',
+  },
+  {
+    name: 'Karlo Babić',
+    initials: 'KB',
+    roles: ['Data Protection Officer'],
+    title: 'Službenik za zaštitu podataka',
+  },
+] as const;
+
 export const formattedAddress = `${org.address.street}, ${org.address.postalCode} ${org.address.city}, ${org.address.region}, ${org.address.country}`;
 
 export const navLinks = [

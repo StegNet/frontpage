@@ -99,7 +99,7 @@ Deploys are driven by **git tags**. Pushing a `vX.Y.Z` tag triggers
 1. builds the image (version + commit baked in) and creates the Sentry release
    with source maps,
 2. pushes `ghcr.io/stegnet/frontpage:<version>` and `:latest` to GHCR,
-3. records a Sentry deploy and calls the Portainer webhook to roll out.
+3. records a Sentry deploy.
 
 ```bash
 git tag v1.2.3

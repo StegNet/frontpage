@@ -28,7 +28,7 @@ import {
 import { LogPageView } from '@/components/log-page-view';
 import { RevealOnScroll } from '@/components/reveal-on-scroll';
 import { emailTemplates, mailto } from '@/lib/mailto';
-import { leadership, org } from '@/lib/org';
+import { leadership, org, team } from '@/lib/org';
 import { enter } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 
@@ -36,6 +36,54 @@ const membershipLink = mailto(
   emailTemplates.membership.subject,
   emailTemplates.membership.body,
 );
+
+type Person = (typeof leadership)[number] | (typeof team)[number];
+
+// Representatives and the wider team are listed apart, like on the about page.
+function PeopleGroup({
+  id,
+  title,
+  people,
+}: {
+  id: string;
+  title: string;
+  people: readonly Person[];
+}) {
+  return (
+    <section aria-labelledby={id} className="mt-5">
+      <h3
+        id={id}
+        className="text-xs font-medium tracking-widest text-muted-foreground uppercase"
+      >
+        {title}
+      </h3>
+      <ul className="mt-3 flex list-none flex-col gap-3">
+        {people.map((person) => (
+          <li key={person.name} className="flex items-center gap-3">
+            <Avatar className="size-10 ring-2 ring-amber-500/30 ring-offset-2 ring-offset-card">
+              <AvatarFallback className="bg-gradient-to-br from-amber-500/15 to-fuchsia-500/15 text-sm font-medium text-foreground">
+                {person.initials}
+              </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0">
+              <p className="text-sm font-medium">{person.name}</p>
+              {/* Lines wrap between roles before breaking inside one. */}
+              <p className="flex flex-wrap gap-x-1 text-xs">
+                {person.roles.map((role, i) => (
+                  <span key={role}>
+                    {role}
+                    {i < person.roles.length - 1 && ' ·'}
+                  </span>
+                ))}
+              </p>
+              <p className="text-xs text-muted-foreground">{person.title}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 // Topics straight from the association's mission.
 const topics = [
@@ -400,28 +448,13 @@ export default function Home() {
           <p className="mt-1.5 text-sm text-muted-foreground">
             The association is led by people who give their own time to it.
           </p>
-          <ul className="mt-5 flex list-none flex-col gap-3">
-            {leadership.map((person) => (
-              <li key={person.name} className="flex items-center gap-3">
-                <Avatar className="size-10 ring-2 ring-amber-500/30 ring-offset-2 ring-offset-card">
-                  <AvatarFallback className="bg-gradient-to-br from-amber-500/15 to-fuchsia-500/15 text-sm font-medium text-foreground">
-                    {person.initials}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium">{person.name}</p>
-                  <p className="truncate text-xs text-muted-foreground">
-                    {person.roles.join(' · ')}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <PeopleGroup id="leadership" title="Leadership" people={leadership} />
+          <PeopleGroup id="team" title="Team" people={team} />
           <Link
             href="/about#leadership"
             className="mt-6 inline-flex items-center gap-1 self-start py-1 text-sm font-medium underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
           >
-            Meet the leadership
+            Meet the people
             <ArrowRight aria-hidden className="size-4" />
           </Link>
         </div>

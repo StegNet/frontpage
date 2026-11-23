@@ -29,7 +29,7 @@ import {
 import { CopyButton } from '@/components/copy-button';
 import { RevealOnScroll } from '@/components/reveal-on-scroll';
 import { emailTemplates, mailto } from '@/lib/mailto';
-import { formattedAddress, leadership, org } from '@/lib/org';
+import { formattedAddress, leadership, org, team } from '@/lib/org';
 import { enter } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 
@@ -53,6 +53,7 @@ const sections = [
   { id: 'mission', label: 'Mission' },
   { id: 'audience', label: "Who it's for" },
   { id: 'leadership', label: 'Leadership' },
+  { id: 'team', label: 'Team' },
   { id: 'details', label: 'Official details' },
 ] as const;
 
@@ -171,6 +172,50 @@ function SectionHeading({
         </p>
       )}
     </div>
+  );
+}
+
+type Person = (typeof leadership)[number] | (typeof team)[number];
+
+// Two wide cards per row (four narrow ones in a row looked cramped). A lone
+// last card is centred, so odd counts stay balanced.
+function PeopleList({ people }: { people: readonly Person[] }) {
+  return (
+    <ul className="mt-8 flex list-none flex-wrap justify-center gap-4">
+      {people.map((person, i) => (
+        <li
+          key={person.name}
+          className="reveal w-full sm:w-[calc(50%_-_0.5rem)]"
+          style={{ animationDelay: `${i * 100}ms` }}
+        >
+          <Card className="h-full justify-center hover:shadow-md hover:ring-foreground/20 motion-safe:transition-all motion-safe:hover:-translate-y-1">
+            <CardContent className="flex items-center gap-4 sm:gap-5 sm:px-6">
+              {/* No size="lg": its data-[size=lg]:size-10 would beat size-14/16. */}
+              <Avatar className="size-14 ring-2 ring-amber-500/30 ring-offset-2 ring-offset-card sm:size-16">
+                <AvatarFallback className="bg-gradient-to-br from-amber-500/15 to-fuchsia-500/15 text-lg font-medium text-foreground">
+                  {person.initials}
+                </AvatarFallback>
+              </Avatar>
+              <div className="grid min-w-0 gap-0.5">
+                <CardTitle className="text-base sm:text-lg">
+                  {person.name}
+                </CardTitle>
+                {/* Lines wrap between roles before breaking inside one. */}
+                <p className="flex flex-wrap gap-x-1 text-sm font-medium">
+                  {person.roles.map((role, i) => (
+                    <span key={role}>
+                      {role}
+                      {i < person.roles.length - 1 && ' ·'}
+                    </span>
+                  ))}
+                </p>
+                <CardDescription>{person.title}</CardDescription>
+              </div>
+            </CardContent>
+          </Card>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -402,39 +447,24 @@ export default function About() {
           The people authorised to represent the association.
         </SectionHeading>
 
-        <ul className="mt-8 grid list-none gap-4 sm:grid-cols-3">
-          {leadership.map((person, i) => (
-            <li
-              key={person.name}
-              className="reveal"
-              style={{ animationDelay: `${i * 100}ms` }}
-            >
-              <Card className="h-full hover:shadow-md hover:ring-foreground/20 motion-safe:transition-all motion-safe:hover:-translate-y-1 sm:items-center sm:text-center">
-                <CardHeader className="grid-cols-[auto_1fr] items-center gap-x-4 sm:w-full sm:grid-cols-1 sm:justify-items-center">
-                  {/* No size="lg": its data-[size=lg]:size-10 would beat size-14/16. */}
-                  <Avatar className="row-span-2 size-14 ring-2 ring-amber-500/30 ring-offset-2 ring-offset-card sm:row-span-1 sm:mb-2 sm:size-16">
-                    <AvatarFallback className="bg-gradient-to-br from-amber-500/15 to-fuchsia-500/15 text-lg font-medium text-foreground">
-                      {person.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <CardTitle className="text-base sm:text-lg">
-                    {person.name}
-                  </CardTitle>
-                  <CardDescription className="col-start-2 sm:col-start-1">
-                    {person.title}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-wrap gap-2 sm:justify-center">
-                  {person.roles.map((role) => (
-                    <Badge key={role} variant="secondary">
-                      {role}
-                    </Badge>
-                  ))}
-                </CardContent>
-              </Card>
-            </li>
-          ))}
-        </ul>
+        <PeopleList people={leadership} />
+      </section>
+
+      {/* Team */}
+      <section
+        id="team"
+        aria-labelledby="team-title"
+        className="mt-16 w-full max-w-4xl scroll-mt-24 sm:mt-24"
+      >
+        <SectionHeading
+          id="team-title"
+          eyebrow="Behind the scenes"
+          title="Team"
+        >
+          The people who help run the association.
+        </SectionHeading>
+
+        <PeopleList people={team} />
       </section>
 
       {/* Official details */}
