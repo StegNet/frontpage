@@ -77,10 +77,10 @@ export default function Home() {
           The people authorised to represent the association.
         </p>
 
-        {/* Two wide cards per row, avatar beside the text: four narrow cards in one row looked cramped. */}
-        <ul className="mt-8 grid list-none gap-4 text-left sm:grid-cols-2">
+        {/* Two wide cards per row (four narrow ones in a row looked cramped). A lone last card is centred, so odd counts stay balanced. */}
+        <ul className="mt-8 flex list-none flex-wrap justify-center gap-4 text-left">
           {[...leadership, ...team].map((person) => (
-            <li key={person.name}>
+            <li key={person.name} className="w-full sm:w-[calc(50%_-_0.5rem)]">
               <Card className="h-full justify-center">
                 <CardContent className="flex items-center gap-4 sm:gap-5 sm:px-6">
                   <Avatar className="size-16">
