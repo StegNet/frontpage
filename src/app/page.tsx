@@ -245,16 +245,23 @@ export default function Home() {
         <h1
           id="hero-title"
           className={cn(
-            'max-w-4xl text-4xl font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl',
+            'max-w-4xl text-4xl font-semibold tracking-tight text-balance sm:text-6xl',
             enter,
             'motion-safe:delay-75',
           )}
         >
-          Learn, build and share technology{' '}
-          <span className="bg-gradient-to-r from-amber-500 to-fuchsia-500 bg-clip-text text-transparent">
-            together
-          </span>
+          {org.legalName}
         </h1>
+
+        <p
+          className={cn(
+            'mt-4 text-base font-medium text-balance text-muted-foreground sm:text-lg',
+            enter,
+            'motion-safe:delay-100',
+          )}
+        >
+          {org.alternateName}
+        </p>
 
         <p
           className={cn(
@@ -263,9 +270,9 @@ export default function Home() {
             'motion-safe:delay-150',
           )}
         >
-          {org.name} is a volunteer-run association promoting IT, computing and
-          digital technologies, and growing a culture of innovation and
-          entrepreneurship in our community.
+          A non-profit association from Croatia, promoting IT, computing and
+          digital technologies as well as fostering a culture of innovation and
+          entrepreneurship.
         </p>
 
         <div
@@ -293,16 +300,6 @@ export default function Home() {
             <ArrowRight aria-hidden data-icon="inline-end" />
           </Link>
         </div>
-
-        <p
-          className={cn(
-            'mt-10 text-xs text-balance text-muted-foreground sm:text-sm',
-            enter,
-            'motion-safe:delay-300',
-          )}
-        >
-          {org.legalName} &middot; {org.alternateName}
-        </p>
       </section>
 
       {/* What we do */}
