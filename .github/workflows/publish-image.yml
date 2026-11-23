@@ -80,6 +80,8 @@ jobs:
   request-update:
     needs: publish
     runs-on: blacksmith-2vcpu-ubuntu-2404
+    # No step here uses GITHUB_TOKEN, so grant it nothing.
+    permissions: {}
     timeout-minutes: 5
     environment:
       name: production
