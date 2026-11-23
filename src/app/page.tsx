@@ -23,8 +23,8 @@ import {
   AudienceBubbles,
   LocationPin,
   ShareNetwork,
-  TopicMarquee,
 } from '@/components/home-visuals';
+import { TopicMarquee } from '@/components/topic-marquee';
 import { LogPageView } from '@/components/log-page-view';
 import { RevealOnScroll } from '@/components/reveal-on-scroll';
 import { emailTemplates, mailto } from '@/lib/mailto';
