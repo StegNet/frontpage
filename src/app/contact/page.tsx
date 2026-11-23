@@ -240,7 +240,7 @@ export default function Contact() {
                     <CardTitle className="text-base">{topic.title}</CardTitle>
                     <ArrowUpRight
                       aria-hidden
-                      className="size-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground"
+                      className="size-4 text-muted-foreground group-hover:text-foreground motion-safe:transition-transform motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:translate-x-0.5"
                     />
                     <CardDescription className="col-start-2 col-span-2">
                       {topic.description}
