@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { useLogger } from '@/lib/logger-context';
-import { formattedAddress, leadership, org } from '@/lib/org';
+import { formattedAddress, leadership, org, team } from '@/lib/org';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -79,7 +79,7 @@ export default function Home() {
 
         {/* Two wide cards per row, avatar beside the text: four narrow cards in one row looked cramped. */}
         <ul className="mt-8 grid list-none gap-4 text-left sm:grid-cols-2">
-          {leadership.map((person) => (
+          {[...leadership, ...team].map((person) => (
             <li key={person.name}>
               <Card className="h-full justify-center">
                 <CardContent className="flex items-center gap-4 sm:gap-5 sm:px-6">
@@ -90,8 +90,8 @@ export default function Home() {
                   </Avatar>
                   <div className="grid min-w-0 gap-0.5">
                     <CardTitle className="text-lg">{person.name}</CardTitle>
-                    {/* Each role stays whole: wrap between roles, never mid-role. */}
-                    <p className="flex flex-wrap gap-x-1.5 text-sm font-medium">
+                    {/* Lines wrap between roles before breaking inside one. */}
+                    <p className="flex flex-wrap gap-x-1 text-sm font-medium">
                       {person.roles.map((role, i) => (
                         <span key={role}>
                           {role}

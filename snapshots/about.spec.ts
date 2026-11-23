@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { emailTemplates } from '../src/lib/mailto';
-import { formattedAddress, leadership, org } from '../src/lib/org';
+import { formattedAddress, leadership, org, team } from '../src/lib/org';
 
 test('page has a clear outline of headings', async ({ page }) => {
   await page.goto('/about');
@@ -12,6 +12,7 @@ test('page has a clear outline of headings', async ({ page }) => {
     'Our mission',
     "Who it's for",
     'Leadership',
+    'Team',
     'Official details',
   ]) {
     await expect(main.getByRole('heading', { level: 2, name })).toBeVisible();
@@ -24,7 +25,7 @@ test('"On this page" links jump to their section below the fixed nav', async ({
   await page.goto('/about');
   const nav = page.getByRole('navigation', { name: 'On this page' });
   const links = nav.getByRole('link');
-  await expect(links).toHaveCount(4);
+  await expect(links).toHaveCount(5);
   const siteNav = page.getByRole('navigation', { name: 'Main' });
   for (const link of await links.all()) {
     const id = (await link.getAttribute('href'))!.replace('#', '');
@@ -78,15 +79,21 @@ test('"Become a member" opens a pre-filled membership email', async ({
   }
 });
 
-test('leadership lists every representative', async ({ page }) => {
-  await page.goto('/about');
-  const section = page.getByRole('region', { name: 'Leadership' });
-  for (const person of leadership) {
-    const card = section.getByRole('listitem').filter({ hasText: person.name });
-    await expect(card).toContainText(person.title);
-    for (const role of person.roles) await expect(card).toContainText(role);
-  }
-});
+for (const [name, people] of [
+  ['Leadership', leadership],
+  ['Team', team],
+] as const) {
+  test(`${name} lists exactly its people`, async ({ page }) => {
+    await page.goto('/about');
+    const items = page.getByRole('region', { name }).getByRole('listitem');
+    await expect(items).toHaveCount(people.length);
+    for (const person of people) {
+      const card = items.filter({ hasText: person.name });
+      await expect(card).toContainText(person.title);
+      for (const role of person.roles) await expect(card).toContainText(role);
+    }
+  });
+}
 
 test('leadership avatars use their intended size', async ({ page }) => {
   for (const route of ['/about', '/']) {

@@ -40,6 +40,10 @@ export const leadership = [
     roles: ['Secretary'],
     title: 'Tajnik udruge',
   },
+] as const;
+
+// People who help run the association but don't represent it.
+export const team = [
   {
     name: 'Tonka Baša',
     initials: 'TB',
