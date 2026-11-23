@@ -10,7 +10,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -78,25 +77,30 @@ export default function Home() {
           The people authorised to represent the association.
         </p>
 
-        <ul className="mt-8 grid list-none gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Two wide cards per row, avatar beside the text: four narrow cards in one row looked cramped. */}
+        <ul className="mt-8 grid list-none gap-4 text-left sm:grid-cols-2">
           {leadership.map((person) => (
             <li key={person.name}>
-              <Card className="h-full items-center text-center">
-                <CardHeader className="w-full justify-items-center">
-                  <Avatar className="mb-2 size-16">
+              <Card className="h-full justify-center">
+                <CardContent className="flex items-center gap-4 sm:gap-5 sm:px-6">
+                  <Avatar className="size-16">
                     <AvatarFallback className="text-lg font-medium">
                       {person.initials}
                     </AvatarFallback>
                   </Avatar>
-                  <CardTitle className="text-lg">{person.name}</CardTitle>
-                  <CardDescription>{person.title}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-wrap justify-center gap-2">
-                  {person.roles.map((role) => (
-                    <Badge key={role} variant="secondary">
-                      {role}
-                    </Badge>
-                  ))}
+                  <div className="grid min-w-0 gap-0.5">
+                    <CardTitle className="text-lg">{person.name}</CardTitle>
+                    {/* Each role stays whole: wrap between roles, never mid-role. */}
+                    <p className="flex flex-wrap gap-x-1.5 text-sm font-medium">
+                      {person.roles.map((role, i) => (
+                        <span key={role}>
+                          {role}
+                          {i < person.roles.length - 1 && ' ·'}
+                        </span>
+                      ))}
+                    </p>
+                    <CardDescription>{person.title}</CardDescription>
+                  </div>
                 </CardContent>
               </Card>
             </li>

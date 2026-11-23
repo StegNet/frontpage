@@ -405,34 +405,37 @@ export default function About() {
           The people authorised to represent the association.
         </SectionHeading>
 
-        <ul className="mt-8 grid list-none gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Two wide cards per row, avatar beside the text: four narrow cards in one row looked cramped. */}
+        <ul className="mt-8 grid list-none gap-4 sm:grid-cols-2">
           {leadership.map((person, i) => (
             <li
               key={person.name}
               className="reveal"
               style={{ animationDelay: `${i * 100}ms` }}
             >
-              <Card className="h-full hover:shadow-md hover:ring-foreground/20 motion-safe:transition-all motion-safe:hover:-translate-y-1 sm:items-center sm:text-center">
-                <CardHeader className="grid-cols-[auto_1fr] items-center gap-x-4 sm:w-full sm:grid-cols-1 sm:justify-items-center">
+              <Card className="h-full justify-center hover:shadow-md hover:ring-foreground/20 motion-safe:transition-all motion-safe:hover:-translate-y-1">
+                <CardContent className="flex items-center gap-4 sm:gap-5 sm:px-6">
                   {/* No size="lg": its data-[size=lg]:size-10 would beat size-14/16. */}
-                  <Avatar className="row-span-2 size-14 ring-2 ring-amber-500/30 ring-offset-2 ring-offset-card sm:row-span-1 sm:mb-2 sm:size-16">
+                  <Avatar className="size-14 ring-2 ring-amber-500/30 ring-offset-2 ring-offset-card sm:size-16">
                     <AvatarFallback className="bg-gradient-to-br from-amber-500/15 to-fuchsia-500/15 text-lg font-medium text-foreground">
                       {person.initials}
                     </AvatarFallback>
                   </Avatar>
-                  <CardTitle className="text-base sm:text-lg">
-                    {person.name}
-                  </CardTitle>
-                  <CardDescription className="col-start-2 sm:col-start-1">
-                    {person.title}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-wrap gap-2 sm:justify-center">
-                  {person.roles.map((role) => (
-                    <Badge key={role} variant="secondary">
-                      {role}
-                    </Badge>
-                  ))}
+                  <div className="grid min-w-0 gap-0.5">
+                    <CardTitle className="text-base sm:text-lg">
+                      {person.name}
+                    </CardTitle>
+                    {/* Each role stays whole: wrap between roles, never mid-role. */}
+                    <p className="flex flex-wrap gap-x-1.5 text-sm font-medium">
+                      {person.roles.map((role, i) => (
+                        <span key={role}>
+                          {role}
+                          {i < person.roles.length - 1 && ' ·'}
+                        </span>
+                      ))}
+                    </p>
+                    <CardDescription>{person.title}</CardDescription>
+                  </div>
                 </CardContent>
               </Card>
             </li>
