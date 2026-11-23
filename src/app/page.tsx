@@ -16,6 +16,43 @@ import { Separator } from '@/components/ui/separator';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
+type Person = (typeof leadership)[number] | (typeof team)[number];
+
+// Two wide cards per row (four narrow ones in a row looked cramped). A lone
+// last card is centred, so odd counts stay balanced.
+function PeopleList({ people }: { people: readonly Person[] }) {
+  return (
+    <ul className="mt-8 flex list-none flex-wrap justify-center gap-4 text-left">
+      {people.map((person) => (
+        <li key={person.name} className="w-full sm:w-[calc(50%_-_0.5rem)]">
+          <Card className="h-full justify-center">
+            <CardContent className="flex items-center gap-4 sm:gap-5 sm:px-6">
+              <Avatar className="size-16">
+                <AvatarFallback className="text-lg font-medium">
+                  {person.initials}
+                </AvatarFallback>
+              </Avatar>
+              <div className="grid min-w-0 gap-0.5">
+                <CardTitle className="text-lg">{person.name}</CardTitle>
+                {/* Lines wrap between roles before breaking inside one. */}
+                <p className="flex flex-wrap gap-x-1 text-sm font-medium">
+                  {person.roles.map((role, i) => (
+                    <span key={role}>
+                      {role}
+                      {i < person.roles.length - 1 && ' ·'}
+                    </span>
+                  ))}
+                </p>
+                <CardDescription>{person.title}</CardDescription>
+              </div>
+            </CardContent>
+          </Card>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default function Home() {
   const logger = useLogger();
 
@@ -77,35 +114,21 @@ export default function Home() {
           The people authorised to represent the association.
         </p>
 
-        {/* Two wide cards per row (four narrow ones in a row looked cramped). A lone last card is centred, so odd counts stay balanced. */}
-        <ul className="mt-8 flex list-none flex-wrap justify-center gap-4 text-left">
-          {[...leadership, ...team].map((person) => (
-            <li key={person.name} className="w-full sm:w-[calc(50%_-_0.5rem)]">
-              <Card className="h-full justify-center">
-                <CardContent className="flex items-center gap-4 sm:gap-5 sm:px-6">
-                  <Avatar className="size-16">
-                    <AvatarFallback className="text-lg font-medium">
-                      {person.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="grid min-w-0 gap-0.5">
-                    <CardTitle className="text-lg">{person.name}</CardTitle>
-                    {/* Lines wrap between roles before breaking inside one. */}
-                    <p className="flex flex-wrap gap-x-1 text-sm font-medium">
-                      {person.roles.map((role, i) => (
-                        <span key={role}>
-                          {role}
-                          {i < person.roles.length - 1 && ' ·'}
-                        </span>
-                      ))}
-                    </p>
-                    <CardDescription>{person.title}</CardDescription>
-                  </div>
-                </CardContent>
-              </Card>
-            </li>
-          ))}
-        </ul>
+        <PeopleList people={leadership} />
+      </section>
+
+      <section aria-labelledby="team" className="mt-16 w-full max-w-4xl">
+        <h2
+          id="team"
+          className="text-2xl font-semibold tracking-tight sm:text-3xl"
+        >
+          Team
+        </h2>
+        <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+          The people who help run the association.
+        </p>
+
+        <PeopleList people={team} />
       </section>
 
       <Separator className="my-16 max-w-xs" />

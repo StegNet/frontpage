@@ -84,16 +84,39 @@ for (const [name, people] of [
   ['Team', team],
 ] as const) {
   test(`${name} lists exactly its people`, async ({ page }) => {
-    await page.goto('/about');
-    const items = page.getByRole('region', { name }).getByRole('listitem');
-    await expect(items).toHaveCount(people.length);
-    for (const person of people) {
-      const card = items.filter({ hasText: person.name });
-      await expect(card).toContainText(person.title);
-      for (const role of person.roles) await expect(card).toContainText(role);
+    // Home and About both keep representatives and the wider team apart.
+    for (const route of ['/', '/about']) {
+      await page.goto(route);
+      const items = page.getByRole('region', { name }).getByRole('listitem');
+      await expect(items, route).toHaveCount(people.length);
+      for (const person of people) {
+        const card = items.filter({ hasText: person.name });
+        await expect(card).toContainText(person.title);
+        for (const role of person.roles) await expect(card).toContainText(role);
+      }
     }
   });
 }
+
+test('roles wrap between roles, not inside one', async ({ page }) => {
+  // From 360px every role fits on a line of its own. Below that a long role
+  // may still break rather than be clipped, so 320px is left out on purpose.
+  for (const width of [360, 412, 800, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const route of ['/', '/about']) {
+      await page.goto(route);
+      const broken = await page.evaluate(() =>
+        [...document.querySelectorAll('main li p.flex-wrap > span')]
+          .filter((span) => {
+            const line = parseFloat(getComputedStyle(span).lineHeight);
+            return span.getBoundingClientRect().height > line * 1.5;
+          })
+          .map((span) => span.textContent),
+      );
+      expect(broken, `${route} at ${width}px`).toEqual([]);
+    }
+  }
+});
 
 test('leadership avatars use their intended size', async ({ page }) => {
   for (const route of ['/about', '/']) {
