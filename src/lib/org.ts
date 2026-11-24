@@ -9,7 +9,7 @@ export const org = {
   oib: '58269598155',
   // Registry number in the Croatian Register of Associations (Registar udruga).
   registryNumber: '18003779',
-  email: 'max@stegnet.com',
+  email: 'management@stegnet.com',
   address: {
     street: 'Vinež 332F',
     postalCode: '52220',
