@@ -1,0 +1,51 @@
+# Dependabot version updates.
+# https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
+
+version: 2
+
+updates:
+  # JS dependencies (package.json + bun.lock). The `bun` ecosystem keeps
+  # bun.lock in sync, so CI's `bun install --frozen-lockfile` stays green.
+  - package-ecosystem: 'bun'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '07:00'
+      timezone: 'Europe/Zagreb'
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: 'chore(deps)'
+      prefix-development: 'chore(deps-dev)'
+    groups:
+      # Majors stay as separate PRs so breaking changes get looked at one by one.
+      minor-and-patch:
+        update-types:
+          - 'minor'
+          - 'patch'
+
+  # Base images in the Dockerfile (node, caddy).
+  - package-ecosystem: 'docker'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '07:00'
+      timezone: 'Europe/Zagreb'
+    commit-message:
+      prefix: 'chore(docker)'
+
+  # Actions used in .github/workflows.
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '07:00'
+      timezone: 'Europe/Zagreb'
+    commit-message:
+      prefix: 'chore(ci)'
+    groups:
+      github-actions:
+        patterns:
+          - '*'
